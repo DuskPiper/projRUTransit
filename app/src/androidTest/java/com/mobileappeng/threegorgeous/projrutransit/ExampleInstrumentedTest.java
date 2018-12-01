@@ -1,4 +1,4 @@
-package com.mobileappeng.threegorgeous.rutransit;
+package com.mobileappeng.threegorgeous.projrutransit;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.mobileappeng.threegorgeous.rutransit", appContext.getPackageName());
+        assertEquals("com.mobileappeng.threegorgeous.projrutransit", appContext.getPackageName());
     }
 }

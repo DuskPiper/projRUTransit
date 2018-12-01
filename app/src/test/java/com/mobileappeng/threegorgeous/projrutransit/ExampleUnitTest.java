@@ -1,4 +1,4 @@
-package com.mobileappeng.threegorgeous.rutransit;
+package com.mobileappeng.threegorgeous.projrutransit;
 
 import org.junit.Test;
 
