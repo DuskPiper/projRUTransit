@@ -1,7 +1,15 @@
 package com.mobileappeng.threegorgeous.projrutransit;
 
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -14,6 +22,9 @@ import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
+    private NavigationView navigation;
+    private DrawerLayout drawer;
+
     public ArrayList<SchoolBus> schoolBuses;
 
     @Override
@@ -24,6 +35,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        // Initialize NavigationView and DrawerLayout
+        navigation = (NavigationView)findViewById(R.id.navigation);
+        int size = navigation.getMenu().size();
+        for (int i = 0; i < size; i++) {
+            navigation.getMenu().getItem(i).setCheckable(true);
+        }
+        drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
+
+
+        // Set Listeners
+        navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int size = navigation.getMenu().size();
+                for (int i = 0; i < size; i++) {
+                    navigation.getMenu().getItem(i).setChecked(false);
+                }
+                drawer.closeDrawers();
+                menuItem.setChecked(true);
+                Log.d("Navigation", "Checked item id = " + Integer.toString(menuItem.getItemId()));
+                switch(menuItem.getItemId()) {
+                    case R.id.navigation_map:
+                        // Do nothing, stay in current activity
+                        Log.d("Navigation", "Seleted Map");
+                    return true;
+                    case R.id.navigation_today:
+                        // Go to activity: Today
+                        Log.d("Navigation", "Seleted Today");
+                        startActivity(new Intent(MapsActivity.this, TodaySummaryActivity.class));
+                    return true;
+                    case R.id.navigation_settings:
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted Settings");
+                        startActivity(new Intent(MapsActivity.this, SettingsActivity.class));
+                    return true;
+                    default:
+                        Log.e("Navigation", "Selected item not recognized");
+                    return false;
+                }
+            }
+        });
     }
 
 
