@@ -16,7 +16,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        db.execSQL("create table favourate_bus_timeable(_id integer primary key autoincrement, title varchar, description varchar)");
+        db.execSQL("create table favourate_bus_timeable(_id integer primary key autoincrement, bus_name varchar, bus_time varchar)");
     }
 
     @Override
