@@ -41,6 +41,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         int size = navigation.getMenu().size();
         for (int i = 0; i < size; i++) {
             navigation.getMenu().getItem(i).setCheckable(true);
+            navigation.getMenu().getItem(i).setChecked(false);
         }
         drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
 
