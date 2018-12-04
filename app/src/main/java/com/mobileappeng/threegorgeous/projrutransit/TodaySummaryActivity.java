@@ -135,7 +135,67 @@ public class TodaySummaryActivity extends AppCompatActivity {
                     case R.id.navigation_settings:
                         // Go to activity: settings
                         Log.d("Navigation", "Seleted Settings");
-                        startActivity(new Intent(TodaySummaryActivity.this, SettingsActivity.class));
+                        startActivity(new Intent(TodaySummaryActivity.this, TodaySummaryActivity.class));
+                        return true;
+                    case R.id.navigation_1:
+                        startActivity(new Intent(TodaySummaryActivity.this, MapsActivity.class));
+                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
+                        //drawRoute();
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted B Route");
+
+                        return true;
+                    case R.id.navigation_2:
+                        startActivity(new Intent(TodaySummaryActivity.this, MapsActivity.class));
+                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
+                        //drawRoute();
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted EE Route");
+
+                        return true;
+                    case R.id.navigation_3:
+                        startActivity(new Intent(TodaySummaryActivity.this, MapsActivity.class));
+                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
+                        //drawRoute();
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted F Route");
+
+                        return true;
+                    case R.id.navigation_4:
+                        startActivity(new Intent(TodaySummaryActivity.this, MapsActivity.class));
+                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
+                        //drawRoute();
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted H Route");
+
+                        return true;
+                    case R.id.navigation_5:
+                        startActivity(new Intent(TodaySummaryActivity.this, MapsActivity.class));
+                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
+                        //drawRoute();
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted LX Route");
+
+                        return true;
+                    case R.id.navigation_6:
+                        startActivity(new Intent(TodaySummaryActivity.this, MapsActivity.class));
+                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
+                        //drawRoute();
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted REX B Route");
+
+                        return true;
+                    case R.id.navigation_7:
+                        startActivity(new Intent(TodaySummaryActivity.this, MapsActivity.class));
+                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
+                        //drawRoute();
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted REX L Route");
+                        return true;
+                    case R.id.navigation_8:
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted REX L Route");
+
                         return true;
                     default:
                         Log.e("Navigation", "Selected item not recognized");
