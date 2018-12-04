@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.stmt.query.In;
 import com.mobileappeng.threegorgeous.projrutransit.api.NextBusAPI;
 import com.mobileappeng.threegorgeous.projrutransit.data.constants.RUTransitApp;
 import com.mobileappeng.threegorgeous.projrutransit.data.model.BusData;
@@ -175,6 +176,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 activeBusMarkers.clear();
 
                 // Add active bus markers
+                Log.d("Map Marker", Integer.toString(activeBuses.size()) + " active buses");
                 for (int i = 0; i < activeBuses.size(); i++) {
                     double[] location = activeBuses.get(i).getLocation();
                     MarkerOptions markerOptions = new MarkerOptions()
@@ -189,6 +191,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             BusStop[] busStops = route.getBusStops();
             if (busStops != null) {
                 if (busStopMarkers.isEmpty()) { // Create the markers
+                    Log.d("Map Marker", Integer.toString(busStops.length) + " stops");
                     for (BusStop stop : busStops) {
                         MarkerOptions markerOptions = new MarkerOptions()
                                 .position(getLatLng(stop.getLatitude(), stop.getLongitude()))

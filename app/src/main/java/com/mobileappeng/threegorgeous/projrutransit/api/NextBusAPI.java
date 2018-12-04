@@ -52,6 +52,7 @@ public class NextBusAPI {
                 saxParser = factory.newSAXParser();
             }
             InputStream inputStream = downloadUrl(url);
+            Log.d("SAX", "Fetched stream from url = " + url);
             if (inputStream == null) {
                 throw new IOException("Can't connect to the Internet");
             } else {
@@ -86,7 +87,7 @@ public class NextBusAPI {
     // Updates active routes
     public static void updateActiveRoutes() {
         parseXML(AppData.VEHICLE_LOCATIONS_URL, new XMLActiveRoutesHandler());
-        Log.d("TEST", "REFRESHED ACT ROUTES");
+        Log.d("Next Bus API", "Updated active routes");
     }
 
     // Returns an array of the active routes

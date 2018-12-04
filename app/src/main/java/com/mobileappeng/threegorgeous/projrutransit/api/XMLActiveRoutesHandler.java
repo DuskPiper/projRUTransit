@@ -43,7 +43,7 @@ public class XMLActiveRoutesHandler extends DefaultHandler {
         if (qName.equalsIgnoreCase("vehicle")) {
             // Add to active routes
             String busTag = atts.getValue("routeTag");
-            busTag = "b";
+            //busTag = "b";
             BusRoute route = busTagsToBusRoutes.get(busTag);
             if (route == null) {
                 route = new BusRoute(busTag, busTag);
@@ -61,19 +61,20 @@ public class XMLActiveRoutesHandler extends DefaultHandler {
             vehicle.setLocation(Double.parseDouble(atts.getValue("lat")), Double.parseDouble(atts.getValue("lon")));
             vehicle.setVehicleId(atts.getValue("id"));
             activeBuses.add(vehicle);
-            route.setActiveBuses(activeBuses);
-        }
+            Log.d("Routes Handler", "Added one bus for line " + busTag);
+            route.setActiveBuses(activeBuses); }
     }
 
     public void endDocument() throws SAXException {
         // Update active routes
         BusData.setActiveRoutes(new ArrayList<>(activeRoutes));
-
         // Update bus data
         try {
             RUTransitApp.getDatabaseHelper().getDao().createOrUpdate(busData);
+            Log.d("Routes Handler", "Saved active routes");
         } catch (SQLException e) {
             Log.e(TAG, e.toString(), e);
+            Log.e("Routes Handler", "Active routes not saved");
         }
     }
 }
