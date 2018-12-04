@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentActivity;
@@ -28,6 +29,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.stmt.query.In;
 import com.mobileappeng.threegorgeous.projrutransit.api.NextBusAPI;
+import com.mobileappeng.threegorgeous.projrutransit.api.UpdateRoutesTask;
 import com.mobileappeng.threegorgeous.projrutransit.data.constants.RUTransitApp;
 import com.mobileappeng.threegorgeous.projrutransit.data.model.BusData;
 import com.mobileappeng.threegorgeous.projrutransit.data.model.BusPathSegment;
@@ -41,6 +43,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
@@ -55,6 +59,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static BusData busData;
     private String showRoute;
     private ArrayList<String> activeRouteTags;
+    private UpdateRoutesTask routeUpdater;
+    private Timer timer;
 
 
     @Override
@@ -78,11 +84,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
 
-        // route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
+        // Initialize UI
         activeBusMarkers = new ArrayList<>();
         busStopMarkers = new ArrayList<>();
         showRoute = "b";
         refreshActiveRouteTags();
+
+        // Setup auto refresh
+        timer = new Timer();
+        TimerTask timedRouteRefresher = new TimerTask() {
+            @Override
+            public void run() {
+                new UpdateRoutesTask().execute();
+                refreshActiveRouteTags();
+                refreshShownRoute();
+            }
+        };
+        timer.schedule(timedRouteRefresher, 3000, 5000);
 
         // Set Listeners
         navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -136,7 +154,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         LatLng rutgersGate = new LatLng(40.498570, -74.445148);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(rutgersGate, 14));
+        LatLng coreBuilding = new LatLng(40.5203528, -74.4604897);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coreBuilding, 14));
 
         refreshActiveRouteTags();
         refreshShownRoute();
@@ -246,17 +265,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private class UpdateRoutesTask extends AsyncTask<Void, Void, ArrayList<BusRoute>> {
-
-        protected ArrayList<BusRoute> doInBackground(Void... voids) {
-            // Update the bus routes if more than a day has passed since it has been updated
-            long busDataDate = RUTransitApp.getBusData().getDateInMillis();
-            if (busDataDate == 0 || System.currentTimeMillis() - busDataDate >= 86400000/*MILLIS_IN_DAY*/) {
-                NextBusAPI.saveBusRoutes();
-                RUTransitApp.getBusData().setDateInMillis(System.currentTimeMillis());
-            }
-            return NextBusAPI.getActiveRoutes();
-        }
+    @Override
+    public void onStop() {
+        
     }
+
 
 }
