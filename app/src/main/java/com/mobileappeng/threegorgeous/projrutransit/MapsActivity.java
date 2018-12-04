@@ -97,7 +97,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void run() {
                 new UpdateRoutesTask().execute();
                 refreshActiveRouteTags();
-                refreshShownRoute();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshShownRoute();
+                    }
+                });
             }
         };
         timer.schedule(timedRouteRefresher, 3000, 5000);
@@ -267,7 +272,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onStop() {
-        
+
     }
 
 
