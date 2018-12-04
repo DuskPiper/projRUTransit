@@ -106,7 +106,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         };
         timer.schedule(timedRouteRefresher, 3000, 5000);
-
+        
         // Set Listeners
         navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -137,25 +137,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         startActivity(new Intent(MapsActivity.this, SettingsActivity.class));
                     return true;
                     case R.id.navigation_1:
-                        route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
+                        showRoute = "wknd1";
+                        route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get(showRoute);
                         drawRoute();
                         // Go to activity: settings
                         Log.d("Navigation", "Seleted B Route");
-
                         return true;
                     case R.id.navigation_2:
                         route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("ee");
                         drawRoute();
                         // Go to activity: settings
                         Log.d("Navigation", "Seleted EE Route");
-
+                        showRoute = "ee";
                         return true;
                     case R.id.navigation_3:
                         route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("f");
                         drawRoute();
                         // Go to activity: settings
                         Log.d("Navigation", "Seleted F Route");
-
                         return true;
                     case R.id.navigation_4:
                         route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("h");
@@ -322,7 +321,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onStop() {
-
+        super.onStop();
+        timer.cancel();
     }
 
 
