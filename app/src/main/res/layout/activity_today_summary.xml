@@ -8,55 +8,141 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
     <!-- Actual Page Content -->
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/today_summary_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".TodaySummaryActivity">
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="106dp"
-            android:text=""
-            app:layout_constraintEnd_toStartOf="@+id/myview_ensure"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ListView
-            android:id="@+id/bus_timetable"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginBottom="203dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/myview_ensure" />
-
-        <com.mobileappeng.threegorgeous.projrutransit.ClockView
-            android:id="@+id/myview_ensure"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="105dp"
-            app:layout_constraintBottom_toTopOf="@+id/bus_timetable"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/hourly_weather"
-            android:scrollbars="vertical"
+        <android.support.constraint.ConstraintLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/today_summary_layout"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            app:layout_constraintTop_toBottomOf="@+id/bus_timetable"/>
-    </android.support.constraint.ConstraintLayout>
+            android:layout_height="match_parent"
+            tools:context=".TodaySummaryActivity">
 
+            <ImageView
+                android:id="@+id/city_image_view"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/city"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/city_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Position"
+                app:layout_constraintEnd_toEndOf="@+id/city_image_view"
+                app:layout_constraintStart_toStartOf="@+id/city_image_view"
+                app:layout_constraintTop_toBottomOf="@+id/city_image_view" />
+
+            <ImageView
+                android:id="@+id/wendu_image_view"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/wenduji"
+                app:layout_constraintStart_toStartOf="@+id/city_image_view"
+                app:layout_constraintTop_toBottomOf="@+id/city_textView" />
+
+            <TextView
+                android:id="@+id/wendu_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="wendu"
+                app:layout_constraintEnd_toEndOf="@+id/wendu_image_view"
+                app:layout_constraintStart_toStartOf="@+id/wendu_image_view"
+                app:layout_constraintTop_toBottomOf="@+id/wendu_image_view" />
+
+            <ImageView
+                android:id="@+id/shidu_image_view"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/shidu"
+                app:layout_constraintStart_toStartOf="@+id/wendu_image_view"
+                app:layout_constraintTop_toBottomOf="@+id/wendu_textView" />
+
+            <TextView
+                android:id="@+id/shidu_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="shidu"
+                app:layout_constraintEnd_toEndOf="@+id/shidu_image_view"
+                app:layout_constraintStart_toStartOf="@+id/shidu_image_view"
+                app:layout_constraintTop_toBottomOf="@+id/shidu_image_view" />
+
+            <ImageView
+                android:id="@+id/all_the_day_weather_imageview"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:src="@drawable/sunny"
+                app:layout_constraintBottom_toTopOf="@+id/bus_timetable"
+                app:layout_constraintEnd_toEndOf="@+id/bus_timetable"
+                app:layout_constraintHorizontal_bias="0.887"
+                app:layout_constraintStart_toStartOf="@+id/wendu_textView"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.086" />
+
+            <TextView
+                android:id="@+id/all_the_day_weather_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="tianqi"
+                app:layout_constraintTop_toBottomOf="@+id/all_the_day_weather_imageview"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/all_the_day_weather_imageview"
+
+                app:layout_constraintStart_toStartOf="@+id/all_the_day_weather_imageview"
+                 />
+
+            <ListView
+                android:id="@+id/bus_timetable"
+                android:layout_width="wrap_content"
+                android:layout_height="240dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/shidu_textView"
+
+                />
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/hourly_weather"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="20dp"
+                android:scrollbars="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bus_timetable" />
+
+            <com.example.ccy.miuiweatherline.MiuiWeatherView
+                android:id="@+id/Miui_weather_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:line_interval="60dp"
+            app:min_point_height="60dp"
+            app:background_color="#ffffff"
+                app:layout_constraintTop_toBottomOf="@+id/hourly_weather"/>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/history_today"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="20dp"
+                android:scrollbars="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Miui_weather_view"
+                />
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
     <!-- Drawer -->
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation"

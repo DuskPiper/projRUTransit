@@ -1,4 +1,4 @@
-package com.mobileappeng.threegorgeous.projrutransit;
+package com.mobileappeng.threegorgeous.projrutransit.RecycleView_RU_Transit;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.mobileappeng.threegorgeous.projrutransit.R;
 
 import java.util.List;
 
