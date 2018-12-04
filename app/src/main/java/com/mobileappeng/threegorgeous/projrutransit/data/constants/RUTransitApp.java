@@ -48,7 +48,7 @@ public class RUTransitApp extends Application {
                 // Query database first
                 List<BusData> data = getDatabaseHelper().getDao().queryForAll();
                 if (data.size() > 0) {
-                    busData = data.get(0);
+                    busData = data.get(data.size() - 1);
                 }
                 else {
                     // Create a new object in the database if it is nonexistent
@@ -61,6 +61,7 @@ public class RUTransitApp extends Application {
         }
         return busData;
     }
+
 
 /*
     public static synchronized Tracker getTracker() {

@@ -24,8 +24,8 @@ public class XMLActiveRoutesHandler extends DefaultHandler {
     private TreeSet<BusRoute> activeRoutes;
 
     public void startDocument() throws SAXException {
-        //busData = RUTransitApp.getBusData();
-        busData = MapsActivity.getBusData();
+        busData = RUTransitApp.getBusData();
+        // busData = MapsActivity.getBusData();
         busTagsToBusRoutes = busData.getBusTagsToBusRoutes();
         if (busTagsToBusRoutes == null) {
             busTagsToBusRoutes = new HashMap<>();

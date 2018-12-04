@@ -167,6 +167,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected void onPostExecute(Void v) {
             // Update active bus locations
+            route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
             ArrayList<BusVehicle> activeBuses = route.getActiveBuses();
             if (activeBuses != null) {
                 // Clear map of active bus markers
@@ -221,25 +222,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return databaseHelper;
     }
 
-    public static BusData getBusData() {
-        if (busData == null) {
-            try {
-                // Query database first
-                List<BusData> data = getDatabaseHelper().getDao().queryForAll();
-                if (data.size() > 0) {
-                    busData = data.get(0);
-                }
-                else {
-                    // Create a new object in the database if it is nonexistent
-                    busData = new BusData();
-                    getDatabaseHelper().getDao().create(busData);
-                }
-            } catch (SQLException e) {
-                Log.e("MapsActivity", e.toString(), e);
+    /*public static BusData getNewBusData() {
+        BusData bd = new BusData();
+        try {
+            // Query database first
+            List<BusData> data = getDatabaseHelper().getDao().queryForAll();
+            if (data.size() > 0) {
+                bd = data.get(0);
             }
+            else {
+                // Create a new object in the database if it is nonexistent
+                getDatabaseHelper().getDao().create(bd);
+            }
+        } catch (SQLException e) {
+            Log.e("MapsActivity", e.toString(), e);
         }
-        return busData;
-    }
+        return bd;
+    }*/
 
     private class UpdateRoutesTask extends AsyncTask<Void, Void, ArrayList<BusRoute>> {
 
