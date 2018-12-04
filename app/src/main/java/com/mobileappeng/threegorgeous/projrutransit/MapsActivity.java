@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,7 +38,9 @@ import com.mobileappeng.threegorgeous.projrutransit.database.DatabaseHelper;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
@@ -49,8 +52,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private BusRoute route;
     private static DatabaseHelper databaseHelper;
     public ArrayList<SchoolBus> schoolBuses;
-    private static Context mContext;
     private static BusData busData;
+    private String showRoute;
+    private ArrayList<String> activeRouteTags;
 
 
     @Override
@@ -61,7 +65,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        mContext = getApplicationContext();
+
+        // Fetch route data
+        new UpdateRoutesTask().execute();
 
         // Initialize NavigationView and DrawerLayout
         navigation = (NavigationView)findViewById(R.id.navigation);
@@ -71,12 +77,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             navigation.getMenu().getItem(i).setChecked(false);
         }
         drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
-        
-        // Initialize route
-        new UpdateRoutesTask().execute();
+
         // route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
         activeBusMarkers = new ArrayList<>();
         busStopMarkers = new ArrayList<>();
+        showRoute = "b";
+        refreshActiveRouteTags();
 
         // Set Listeners
         navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -92,8 +98,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 switch(menuItem.getItemId()) {
                     case R.id.navigation_map:
 
-                        route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
-                        drawRoute();
+                        refreshShownRoute();
 
                         // Do nothing, stay in current activity
                         Log.d("Navigation", "Seleted Map");
@@ -114,6 +119,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
+
+        navigation.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                new UpdateRoutesTask().execute();
+                refreshActiveRouteTags();
+                return true;
+            }
+        });
     }
 
 
@@ -124,7 +138,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng rutgersGate = new LatLng(40.498570, -74.445148);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(rutgersGate, 14));
 
-
+        refreshActiveRouteTags();
+        refreshShownRoute();
     }
 
     private LatLng getLatLng(double latitude, double longitude) {
@@ -132,6 +147,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void drawRoute() {
+        mMap.clear();
+        busStopMarkers.clear();
+        activeBusMarkers.clear();
         // Draws the active bus locations
         new UpdateMarkers().execute();
 
@@ -157,6 +175,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    private void refreshActiveRouteTags() {
+        Set<String> activeRouteTagSet = RUTransitApp.getBusData().getBusTagsToBusRoutes().keySet();
+        activeRouteTags = new ArrayList<String>();
+        activeRouteTags.addAll(activeRouteTagSet);
+        Collections.sort(activeRouteTags);
+    }
+
+    private void refreshShownRoute() {
+        route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get(showRoute);
+        drawRoute();
+    }
+
     private class UpdateMarkers extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
@@ -167,7 +197,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected void onPostExecute(Void v) {
             // Update active bus locations
-            route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
+            route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get(showRoute);
+            Log.d("Update markers excecute", "Active routes:" + RUTransitApp.getBusData().getBusTagsToBusRoutes().keySet().toString());
             ArrayList<BusVehicle> activeBuses = route.getActiveBuses();
             if (activeBuses != null) {
                 // Clear map of active bus markers
@@ -214,31 +245,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
-
-    public static DatabaseHelper getDatabaseHelper() {
-        if (databaseHelper == null) {
-            databaseHelper = OpenHelperManager.getHelper(mContext, DatabaseHelper.class);
-        }
-        return databaseHelper;
-    }
-
-    /*public static BusData getNewBusData() {
-        BusData bd = new BusData();
-        try {
-            // Query database first
-            List<BusData> data = getDatabaseHelper().getDao().queryForAll();
-            if (data.size() > 0) {
-                bd = data.get(0);
-            }
-            else {
-                // Create a new object in the database if it is nonexistent
-                getDatabaseHelper().getDao().create(bd);
-            }
-        } catch (SQLException e) {
-            Log.e("MapsActivity", e.toString(), e);
-        }
-        return bd;
-    }*/
 
     private class UpdateRoutesTask extends AsyncTask<Void, Void, ArrayList<BusRoute>> {
 

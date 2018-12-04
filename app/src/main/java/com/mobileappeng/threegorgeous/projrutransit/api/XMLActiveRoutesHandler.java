@@ -61,7 +61,7 @@ public class XMLActiveRoutesHandler extends DefaultHandler {
             vehicle.setLocation(Double.parseDouble(atts.getValue("lat")), Double.parseDouble(atts.getValue("lon")));
             vehicle.setVehicleId(atts.getValue("id"));
             activeBuses.add(vehicle);
-            Log.d("Routes Handler", "Added one bus for line " + busTag);
+            // Log.d("Routes Handler", "Added one bus for line " + busTag);
             route.setActiveBuses(activeBuses); }
     }
 
