@@ -53,13 +53,13 @@ public class SettingsActivity extends AppCompatActivity {
                     case R.id.navigation_today:
                         // Go to activity: Today
                         Log.d("Navigation", "Seleted Today");
-                        startActivity(new Intent(SettingsActivity.this, TodaySummaryActivity.class));
+                        startActivity(new Intent(SettingsActivity.this, SettingsActivity.class));
                         return true;
                     case R.id.navigation_settings:
                         // Do nothing, stay in current activity
                         Log.d("Navigation", "Seleted Settings");
                         return true;
-                    case R.id.navigation_b:
+                    case R.id.navigation_1:
                         startActivity(new Intent(SettingsActivity.this, MapsActivity.class));
                         //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
                         //drawRoute();
@@ -67,7 +67,7 @@ public class SettingsActivity extends AppCompatActivity {
                         Log.d("Navigation", "Seleted B Route");
 
                         return true;
-                    case R.id.navigation_ee:
+                    case R.id.navigation_2:
                         startActivity(new Intent(SettingsActivity.this, MapsActivity.class));
                         //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
                         //drawRoute();
@@ -75,7 +75,7 @@ public class SettingsActivity extends AppCompatActivity {
                         Log.d("Navigation", "Seleted EE Route");
 
                         return true;
-                    case R.id.navigation_f:
+                    case R.id.navigation_3:
                         startActivity(new Intent(SettingsActivity.this, MapsActivity.class));
                         //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
                         //drawRoute();
@@ -83,7 +83,7 @@ public class SettingsActivity extends AppCompatActivity {
                         Log.d("Navigation", "Seleted F Route");
 
                         return true;
-                    case R.id.navigation_h:
+                    case R.id.navigation_4:
                         startActivity(new Intent(SettingsActivity.this, MapsActivity.class));
                         //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
                         //drawRoute();
@@ -91,7 +91,7 @@ public class SettingsActivity extends AppCompatActivity {
                         Log.d("Navigation", "Seleted H Route");
 
                         return true;
-                    case R.id.navigation_lx:
+                    case R.id.navigation_5:
                         startActivity(new Intent(SettingsActivity.this, MapsActivity.class));
                         //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
                         //drawRoute();
@@ -99,7 +99,7 @@ public class SettingsActivity extends AppCompatActivity {
                         Log.d("Navigation", "Seleted LX Route");
 
                         return true;
-                    case R.id.navigation_rexb:
+                    case R.id.navigation_6:
                         startActivity(new Intent(SettingsActivity.this, MapsActivity.class));
                         //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
                         //drawRoute();
@@ -107,12 +107,17 @@ public class SettingsActivity extends AppCompatActivity {
                         Log.d("Navigation", "Seleted REX B Route");
 
                         return true;
-                    case R.id.navigation_rexl:
+                    case R.id.navigation_7:
                         startActivity(new Intent(SettingsActivity.this, MapsActivity.class));
                         //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
                         //drawRoute();
                         // Go to activity: settings
                         Log.d("Navigation", "Seleted REX L Route");
+                        return true;
+                    case R.id.navigation_8:
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted REX L Route");
+
                         return true;
                     default:
                         Log.e("Navigation", "Selected item not recognized");
