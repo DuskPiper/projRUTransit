@@ -13,4 +13,28 @@
     <item
         android:id="@+id/navigation_settings"
         android:title="Settings"/>
+    <item
+    android:id="@+id/navigation_1"
+    android:title=""/>
+    <item
+        android:id="@+id/navigation_2"
+        android:title=""/>
+    <item
+        android:id="@+id/navigation_3"
+        android:title=""/>
+    <item
+        android:id="@+id/navigation_4"
+        android:title=""/>
+    <item
+        android:id="@+id/navigation_5"
+        android:title=""/>
+    <item
+        android:id="@+id/navigation_6"
+        android:title=""/>
+    <item
+    android:id="@+id/navigation_7"
+    android:title=""/>
+    <item
+        android:id="@+id/navigation_8"
+        android:title=""/>
 </menu>

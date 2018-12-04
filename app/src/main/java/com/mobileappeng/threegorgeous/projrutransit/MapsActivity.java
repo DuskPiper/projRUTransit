@@ -46,7 +46,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ArrayList<Marker> busStopMarkers;
     private ArrayList<Marker> activeBusMarkers;
     private BusPathSegment[] pathSegments;
-    private BusRoute route;
+    protected BusRoute route;
     private static DatabaseHelper databaseHelper;
     public ArrayList<SchoolBus> schoolBuses;
     private static Context mContext;
@@ -108,6 +108,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Log.d("Navigation", "Seleted Settings");
                         startActivity(new Intent(MapsActivity.this, SettingsActivity.class));
                     return true;
+                    case R.id.navigation_1:
+                        route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
+                        drawRoute();
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted B Route");
+
+                        return true;
+                    case R.id.navigation_2:
+                        route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("ee");
+                        drawRoute();
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted EE Route");
+
+                        return true;
+                    case R.id.navigation_3:
+                        route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("f");
+                        drawRoute();
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted F Route");
+
+                        return true;
+                    case R.id.navigation_4:
+                        route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("h");
+                        drawRoute();
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted H Route");
+
+                        return true;
+                    case R.id.navigation_5:
+                        route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("lx");
+                        drawRoute();
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted LX Route");
+
+                        return true;
+                    case R.id.navigation_6:
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted REX B Route");
+
+                        return true;
+                    case R.id.navigation_7:
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted REX L Route");
+
+                        return true;
+                    case R.id.navigation_8:
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted REX L Route");
+
+                        return true;
                     default:
                         Log.e("Navigation", "Selected item not recognized");
                     return false;
@@ -131,7 +181,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return new LatLng(latitude, longitude);
     }
 
-    private void drawRoute() {
+    protected void drawRoute() {
         // Draws the active bus locations
         new UpdateMarkers().execute();
 

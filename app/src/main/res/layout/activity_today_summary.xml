@@ -101,7 +101,6 @@
 
                 app:layout_constraintStart_toStartOf="@+id/all_the_day_weather_imageview"
                  />
-
             <ListView
                 android:id="@+id/bus_timetable"
                 android:layout_width="wrap_content"
@@ -109,10 +108,7 @@
                 android:layout_marginTop="20dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/shidu_textView"
-
                 />
-
-
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/hourly_weather"
                 android:layout_width="0dp"

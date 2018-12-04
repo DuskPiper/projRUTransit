@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.mobileappeng.threegorgeous.projrutransit.data.constants.RUTransitApp;
+
 import java.util.Map;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -56,6 +58,61 @@ public class SettingsActivity extends AppCompatActivity {
                     case R.id.navigation_settings:
                         // Do nothing, stay in current activity
                         Log.d("Navigation", "Seleted Settings");
+                        return true;
+                    case R.id.navigation_b:
+                        startActivity(new Intent(SettingsActivity.this, MapsActivity.class));
+                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
+                        //drawRoute();
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted B Route");
+
+                        return true;
+                    case R.id.navigation_ee:
+                        startActivity(new Intent(SettingsActivity.this, MapsActivity.class));
+                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
+                        //drawRoute();
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted EE Route");
+
+                        return true;
+                    case R.id.navigation_f:
+                        startActivity(new Intent(SettingsActivity.this, MapsActivity.class));
+                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
+                        //drawRoute();
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted F Route");
+
+                        return true;
+                    case R.id.navigation_h:
+                        startActivity(new Intent(SettingsActivity.this, MapsActivity.class));
+                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
+                        //drawRoute();
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted H Route");
+
+                        return true;
+                    case R.id.navigation_lx:
+                        startActivity(new Intent(SettingsActivity.this, MapsActivity.class));
+                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
+                        //drawRoute();
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted LX Route");
+
+                        return true;
+                    case R.id.navigation_rexb:
+                        startActivity(new Intent(SettingsActivity.this, MapsActivity.class));
+                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
+                        //drawRoute();
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted REX B Route");
+
+                        return true;
+                    case R.id.navigation_rexl:
+                        startActivity(new Intent(SettingsActivity.this, MapsActivity.class));
+                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
+                        //drawRoute();
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted REX L Route");
                         return true;
                     default:
                         Log.e("Navigation", "Selected item not recognized");
