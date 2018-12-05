@@ -106,7 +106,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         };
         timer.schedule(timedRouteRefresher, 3000, 5000);
-        
+
         // Set Listeners
         navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
