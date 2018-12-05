@@ -39,8 +39,10 @@ import com.mobileappeng.threegorgeous.projrutransit.data.model.BusVehicle;
 import com.mobileappeng.threegorgeous.projrutransit.database.DatabaseHelper;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.Timer;
@@ -61,8 +63,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ArrayList<String> activeRouteTags;
     private UpdateRoutesTask routeUpdater;
     private Timer timer;
-
-
+    private long time;
+    private Date date;
+    private SimpleDateFormat format;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +75,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        time=System.currentTimeMillis();
+        date=new Date(time);
+        format=new SimpleDateFormat("E");
         // Fetch route data
         new UpdateRoutesTask().execute();
 
@@ -120,9 +126,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.d("Navigation", "Checked item id = " + Integer.toString(menuItem.getItemId()));
                 switch(menuItem.getItemId()) {
                     case R.id.navigation_map:
-
                         refreshShownRoute();
-
                         // Do nothing, stay in current activity
                         Log.d("Navigation", "Seleted Map");
                     return true;
@@ -137,53 +141,167 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         startActivity(new Intent(MapsActivity.this, SettingsActivity.class));
                     return true;
                     case R.id.navigation_1:
-                        showRoute = "wknd1";
+                        showRoute="b";
+
+                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        {
+                            showRoute = "wknd1";
+                            navigation.getMenu().findItem(R.id.navigation_1).setTitle("Weekend1");
+                            navigation.getMenu().findItem(R.id.navigation_2).setTitle("Weekend2");
+                            navigation.getMenu().findItem(R.id.navigation_3).setCheckable(false);
+                            navigation.getMenu().findItem(R.id.navigation_4).setCheckable(false);
+                            navigation.getMenu().findItem(R.id.navigation_5).setCheckable(false);
+                            navigation.getMenu().findItem(R.id.navigation_6).setCheckable(false);
+                            navigation.getMenu().findItem(R.id.navigation_7).setCheckable(false);
+                            navigation.getMenu().findItem(R.id.navigation_8).setCheckable(false);
+                            navigation.getMenu().findItem(R.id.navigation_9).setCheckable(false);
+                            navigation.getMenu().findItem(R.id.navigation_10).setCheckable(false);
+                            navigation.getMenu().findItem(R.id.navigation_3).setTitle("");
+                            navigation.getMenu().findItem(R.id.navigation_4).setTitle("");
+                            navigation.getMenu().findItem(R.id.navigation_5).setTitle("");
+                            navigation.getMenu().findItem(R.id.navigation_6).setTitle("");
+                            navigation.getMenu().findItem(R.id.navigation_7).setTitle("");
+                            navigation.getMenu().findItem(R.id.navigation_8).setTitle("");
+                            navigation.getMenu().findItem(R.id.navigation_9).setTitle("");
+                            navigation.getMenu().findItem(R.id.navigation_10).setTitle("");
+                        }
+                        else
+                        {
+                            navigation.getMenu().findItem(R.id.navigation_1).setTitle("B");
+                            navigation.getMenu().findItem(R.id.navigation_2).setTitle("EE");
+                            navigation.getMenu().findItem(R.id.navigation_3).setTitle("F");
+                            navigation.getMenu().findItem(R.id.navigation_4).setTitle("H");
+                            navigation.getMenu().findItem(R.id.navigation_5).setTitle("LX");
+                            navigation.getMenu().findItem(R.id.navigation_6).setTitle("REXB");
+                            navigation.getMenu().findItem(R.id.navigation_7).setTitle("REXL");
+                            navigation.getMenu().findItem(R.id.navigation_8).setTitle("RBHS");
+                            navigation.getMenu().findItem(R.id.navigation_9).setTitle("A");
+                            navigation.getMenu().findItem(R.id.navigation_10).setTitle("C");
+                        }
+
                         route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get(showRoute);
                         drawRoute();
                         // Go to activity: settings
                         Log.d("Navigation", "Seleted B Route");
                         return true;
                     case R.id.navigation_2:
-                        route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("ee");
+                        showRoute="ee";
+
+                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        {
+                            showRoute = "wknd2";
+                        }
+                        route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get(showRoute);
                         drawRoute();
                         // Go to activity: settings
                         Log.d("Navigation", "Seleted EE Route");
-                        showRoute = "ee";
                         return true;
                     case R.id.navigation_3:
-                        route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("f");
-                        drawRoute();
+                        showRoute="f";
+                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        {
+                            navigation.getMenu().findItem(R.id.navigation_3).setCheckable(false);
+                        }
+                        else
+                        {
+                            route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("f");
+                            drawRoute();
                         // Go to activity: settings
                         Log.d("Navigation", "Seleted F Route");
+                        }
                         return true;
                     case R.id.navigation_4:
-                        route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("h");
-                        drawRoute();
-                        // Go to activity: settings
-                        Log.d("Navigation", "Seleted H Route");
-
+                        showRoute="h";
+                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        {
+                            navigation.getMenu().findItem(R.id.navigation_4).setCheckable(false);
+                        }
+                        else {
+                            route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("h");
+                            drawRoute();
+                            // Go to activity: settings
+                            Log.d("Navigation", "Seleted H Route");
+                        }
                         return true;
                     case R.id.navigation_5:
-                        route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("lx");
-                        drawRoute();
-                        // Go to activity: settings
-                        Log.d("Navigation", "Seleted LX Route");
-
+                        showRoute="lx";
+                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        {
+                            navigation.getMenu().findItem(R.id.navigation_5).setCheckable(false);
+                        }
+                        else {
+                            route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("lx");
+                            drawRoute();
+                            // Go to activity: settings
+                            Log.d("Navigation", "Seleted LX Route");
+                        }
                         return true;
                     case R.id.navigation_6:
-                        // Go to activity: settings
-                        Log.d("Navigation", "Seleted REX B Route");
-
+                        showRoute="rexb";
+                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        {
+                            navigation.getMenu().findItem(R.id.navigation_6).setCheckable(false);
+                        }
+                        else {
+                            route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("rexb");
+                            drawRoute();
+                            // Go to activity: settings
+                            Log.d("Navigation", "Seleted REX B Route");
+                        }
                         return true;
                     case R.id.navigation_7:
-                        // Go to activity: settings
-                        Log.d("Navigation", "Seleted REX L Route");
-
+                        showRoute="rexl";
+                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        {
+                            navigation.getMenu().findItem(R.id.navigation_7).setCheckable(false);
+                        }
+                        else {
+                            route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("rexl");
+                            drawRoute();
+                            // Go to activity: settings
+                            Log.d("Navigation", "Seleted REX L Route");
+                        }
                         return true;
-                    case R.id.navigation_8:
-                        // Go to activity: settings
-                        Log.d("Navigation", "Seleted REX L Route");
 
+
+                    case R.id.navigation_8:
+                        showRoute="rbhs";
+                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        {
+                            navigation.getMenu().findItem(R.id.navigation_8).setCheckable(false);
+                        }
+                        else {
+                            route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("rbhs");
+                            drawRoute();
+                            // Go to activity: settings
+                            Log.d("Navigation", "Seleted RBHS Route");
+                        }
+                        return true;
+                    case R.id.navigation_9:
+                        showRoute="a";
+                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        {
+                            navigation.getMenu().findItem(R.id.navigation_9).setCheckable(false);
+                        }
+                        else {
+                            route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("a");
+                            drawRoute();
+                            // Go to activity: settings
+                            Log.d("Navigation", "Seleted A Route");
+                        }
+                        return true;
+                    case R.id.navigation_10:
+                        showRoute="c";
+                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        {
+                            navigation.getMenu().findItem(R.id.navigation_10).setCheckable(false);
+                        }
+                        else {
+                            route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("c");
+                            drawRoute();
+                            // Go to activity: settings
+                            Log.d("Navigation", "Seleted C Route");
+                        }
                         return true;
                     default:
                         Log.e("Navigation", "Selected item not recognized");
