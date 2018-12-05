@@ -60,8 +60,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private BusPathSegment[] pathSegments;
     protected BusRoute route;
     private static DatabaseHelper databaseHelper;
-    public ArrayList<SchoolBus> schoolBuses;
-    private static BusData busData;
     private String showRoute;
     private ArrayList<String> activeRouteTags;
     private UpdateRoutesTask routeUpdater;
@@ -71,6 +69,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private SimpleDateFormat format;
     private BitmapDescriptor busMarker;
     private BitmapDescriptor stopMarker;
+    private TimerTask timedRouteRefresher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +104,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Setup auto refresh
         timer = new Timer();
-        TimerTask timedRouteRefresher = new TimerTask() {
+        timedRouteRefresher = new TimerTask() {
             @Override
             public void run() {
                 new UpdateRoutesTask().execute();
@@ -118,7 +117,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 });
             }
         };
-        timer.schedule(timedRouteRefresher, 3000, 5000);
+        //timer.schedule(timedRouteRefresher, 3000, 5000);
 
         // Set Listeners
         navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -459,5 +458,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         timer.cancel();
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (timer != null) {
+            timer.schedule(timedRouteRefresher, 3000, 5000);
+        }
+    }
 }
