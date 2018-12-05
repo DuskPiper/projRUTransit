@@ -2,6 +2,8 @@ package com.mobileappeng.threegorgeous.projrutransit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -21,6 +23,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -66,6 +69,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private long time;
     private Date date;
     private SimpleDateFormat format;
+    private BitmapDescriptor busMarker;
+    private BitmapDescriptor stopMarker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,9 +80,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        time=System.currentTimeMillis();
-        date=new Date(time);
-        format=new SimpleDateFormat("E");
+        time = System.currentTimeMillis();
+        date = new Date(time);
+        format = new SimpleDateFormat("E");
         // Fetch route data
         new UpdateRoutesTask().execute();
 
@@ -91,6 +96,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
 
         // Initialize UI
+        busMarker = BitmapDescriptorFactory.fromResource(R.drawable.bus);
+        stopMarker = BitmapDescriptorFactory.fromResource(R.drawable.bus_stop);
         activeBusMarkers = new ArrayList<>();
         busStopMarkers = new ArrayList<>();
         showRoute = "b";
@@ -412,8 +419,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     double[] location = activeBuses.get(i).getLocation();
                     MarkerOptions markerOptions = new MarkerOptions()
                             .position(getLatLng(location[0], location[1]))
-                            .title("Vehicle ID: " + activeBuses.get(i).getVehicleId());
-                            //.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_bus));
+                            .title("Vehicle ID: " + activeBuses.get(i).getVehicleId())
+                            .icon(busMarker);
                     activeBusMarkers.add(mMap.addMarker(markerOptions));
                 }
             }
@@ -426,9 +433,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     for (BusStop stop : busStops) {
                         MarkerOptions markerOptions = new MarkerOptions()
                                 .position(getLatLng(stop.getLatitude(), stop.getLongitude()))
-                                .title(stop.getTitle());
+                                .title(stop.getTitle())
+                                .icon(stopMarker);
                         if (!stop.isActive()) {
-                            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                            markerOptions.icon(stopMarker);
                         }
                         busStopMarkers.add(mMap.addMarker(markerOptions));
                     }
