@@ -2,6 +2,8 @@ package com.mobileappeng.threegorgeous.projrutransit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -21,6 +23,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -66,6 +69,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private long time;
     private Date date;
     private SimpleDateFormat format;
+    private BitmapDescriptor busMarker;
+    private BitmapDescriptor stopMarker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,9 +80,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        time=System.currentTimeMillis();
-        date=new Date(time);
-        format=new SimpleDateFormat("E");
+        time = System.currentTimeMillis();
+        date = new Date(time);
+        format = new SimpleDateFormat("E");
         // Fetch route data
         new UpdateRoutesTask().execute();
 
@@ -91,6 +96,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
 
         // Initialize UI
+        busMarker = BitmapDescriptorFactory.fromResource(R.drawable.bus);
+        stopMarker = BitmapDescriptorFactory.fromResource(R.drawable.bus_stop);
         activeBusMarkers = new ArrayList<>();
         busStopMarkers = new ArrayList<>();
         showRoute = "b";
@@ -145,6 +152,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                         if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
                         {
+                            moveCamera(40.498, -74.445, 13); // all campuses
                             showRoute = "wknd1";
                             navigation.getMenu().findItem(R.id.navigation_1).setTitle("Weekend1");
                             navigation.getMenu().findItem(R.id.navigation_2).setTitle("Weekend2");
@@ -167,6 +175,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                         else
                         {
+                            moveCamera(40.5243, -74.451, 14); // Busch + Liv
                             navigation.getMenu().findItem(R.id.navigation_1).setTitle("B");
                             navigation.getMenu().findItem(R.id.navigation_2).setTitle("EE");
                             navigation.getMenu().findItem(R.id.navigation_3).setTitle("F");
@@ -181,7 +190,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                         route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get(showRoute);
                         drawRoute();
-                        // Go to activity: settings
                         Log.d("Navigation", "Seleted B Route");
                         return true;
                     case R.id.navigation_2:
@@ -189,11 +197,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                         if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
                         {
+                            moveCamera(40.498, -74.445, 13); // all campuses
                             showRoute = "wknd2";
+                        } else {
+                            moveCamera(40.492, -74.443, 14); // CAC + Cook/Douglas
                         }
                         route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get(showRoute);
                         drawRoute();
-                        // Go to activity: settings
                         Log.d("Navigation", "Seleted EE Route");
                         return true;
                     case R.id.navigation_3:
@@ -205,8 +215,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         else
                         {
                             route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("f");
+                            moveCamera(40.492, -74.443, 14); // CAC + Cook/Douglas
                             drawRoute();
-                        // Go to activity: settings
                         Log.d("Navigation", "Seleted F Route");
                         }
                         return true;
@@ -217,6 +227,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             navigation.getMenu().findItem(R.id.navigation_4).setCheckable(false);
                         }
                         else {
+                            moveCamera(40.512, -74.459, 14); // CAC + Busch
                             route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("h");
                             drawRoute();
                             // Go to activity: settings
@@ -230,9 +241,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             navigation.getMenu().findItem(R.id.navigation_5).setCheckable(false);
                         }
                         else {
+                            moveCamera(40.512, -74.448, 14); // CAC + Liv
                             route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("lx");
                             drawRoute();
-                            // Go to activity: settings
                             Log.d("Navigation", "Seleted LX Route");
                         }
                         return true;
@@ -243,9 +254,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             navigation.getMenu().findItem(R.id.navigation_6).setCheckable(false);
                         }
                         else {
+                            moveCamera(40.5, -74.453, 14); // Busch + Cook/Douglas
                             route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("rexb");
                             drawRoute();
-                            // Go to activity: settings
                             Log.d("Navigation", "Seleted REX B Route");
                         }
                         return true;
@@ -256,14 +267,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             navigation.getMenu().findItem(R.id.navigation_7).setCheckable(false);
                         }
                         else {
+                            moveCamera(40.5057, -74.4407, 14); // Liv + Cook/Douglas
                             route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("rexl");
                             drawRoute();
-                            // Go to activity: settings
                             Log.d("Navigation", "Seleted REX L Route");
                         }
                         return true;
-
-
                     case R.id.navigation_8:
                         showRoute="rbhs";
                         if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
@@ -271,9 +280,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             navigation.getMenu().findItem(R.id.navigation_8).setCheckable(false);
                         }
                         else {
+                            moveCamera(40.512, -74.459, 14); // CAC + Busch
                             route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("rbhs");
                             drawRoute();
-                            // Go to activity: settings
                             Log.d("Navigation", "Seleted RBHS Route");
                         }
                         return true;
@@ -284,9 +293,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             navigation.getMenu().findItem(R.id.navigation_9).setCheckable(false);
                         }
                         else {
+                            moveCamera(40.512, -74.459, 14); // CAC + Busch
                             route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("a");
                             drawRoute();
-                            // Go to activity: settings
                             Log.d("Navigation", "Seleted A Route");
                         }
                         return true;
@@ -297,9 +306,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             navigation.getMenu().findItem(R.id.navigation_10).setCheckable(false);
                         }
                         else {
+                            moveCamera(40.5169134, -74.4586928, 15); // Busch
                             route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("c");
                             drawRoute();
-                            // Go to activity: settings
                             Log.d("Navigation", "Seleted C Route");
                         }
                         return true;
@@ -327,10 +336,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLng rutgersGate = new LatLng(40.498570, -74.445148);
         LatLng coreBuilding = new LatLng(40.5203528, -74.4604897);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coreBuilding, 14));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(rutgersGate, 13.5f));
 
         refreshActiveRouteTags();
         refreshShownRoute();
+    }
+
+    private void moveCamera(double lat, double lng, float zoom) {
+        if (mMap != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), zoom));
+        }
     }
 
     private LatLng getLatLng(double latitude, double longitude) {
@@ -404,8 +419,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     double[] location = activeBuses.get(i).getLocation();
                     MarkerOptions markerOptions = new MarkerOptions()
                             .position(getLatLng(location[0], location[1]))
-                            .title("Vehicle ID: " + activeBuses.get(i).getVehicleId());
-                            //.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_bus));
+                            .title("Vehicle ID: " + activeBuses.get(i).getVehicleId())
+                            .icon(busMarker);
                     activeBusMarkers.add(mMap.addMarker(markerOptions));
                 }
             }
@@ -418,9 +433,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     for (BusStop stop : busStops) {
                         MarkerOptions markerOptions = new MarkerOptions()
                                 .position(getLatLng(stop.getLatitude(), stop.getLongitude()))
-                                .title(stop.getTitle());
+                                .title(stop.getTitle())
+                                .icon(stopMarker);
                         if (!stop.isActive()) {
-                            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                            markerOptions.icon(stopMarker);
                         }
                         busStopMarkers.add(mMap.addMarker(markerOptions));
                     }
