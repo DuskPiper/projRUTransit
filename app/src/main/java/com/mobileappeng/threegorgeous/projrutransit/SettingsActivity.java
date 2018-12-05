@@ -11,6 +11,10 @@ import android.view.MenuItem;
 
 import com.mobileappeng.threegorgeous.projrutransit.data.constants.RUTransitApp;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Map;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -58,6 +62,23 @@ public class SettingsActivity extends AppCompatActivity {
                     case R.id.navigation_settings:
                         // Do nothing, stay in current activity
                         Log.d("Navigation", "Seleted Settings");
+
+
+                        JSONObject dataJson= null;
+                        try {
+                            dataJson = new JSONObject("你的Json数据");
+                            JSONObject response=dataJson.getJSONObject("response");
+                            JSONArray data=response.getJSONArray("data");
+                            JSONObject info=data.getJSONObject(0);
+                            String province=info.getString("province");
+                            String city=info.getString("city");
+                            String district=info.getString("district");
+                            String address=info.getString("address");
+                            System.out.println(province+city+district+address);}
+                            catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                         return true;
                     case R.id.navigation_1:
                         startActivity(new Intent(SettingsActivity.this, MapsActivity.class));
@@ -126,5 +147,22 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+
+        Thread thread=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    System.out.println(new HtmlService().getHtml("http://history.muffinlabs.com/date"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+        thread.start();
+
+
     }
+
+
 }

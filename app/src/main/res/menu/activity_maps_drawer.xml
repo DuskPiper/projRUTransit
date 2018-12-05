@@ -15,7 +15,7 @@
         android:title="Settings"/>
     <item
     android:id="@+id/navigation_1"
-    android:title=""/>
+    android:title="Update"/>
     <item
         android:id="@+id/navigation_2"
         android:title=""/>
@@ -36,5 +36,11 @@
     android:title=""/>
     <item
         android:id="@+id/navigation_8"
+        android:title=""/>
+    <item
+        android:id="@+id/navigation_9"
+        android:title=""/>
+    <item
+        android:id="@+id/navigation_10"
         android:title=""/>
 </menu>

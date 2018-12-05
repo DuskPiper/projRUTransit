@@ -1,1 +1,1 @@
-include ':app', 'weatherViewOutside'
+include ':app', 'weatherViewOutside', 'WeatherAPI'
