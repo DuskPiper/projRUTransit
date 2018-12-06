@@ -6,13 +6,10 @@ import github.vatsal.easyweather.Helper.TempUnitConverter;
 import github.vatsal.easyweather.Helper.WeatherCallback;
 import github.vatsal.easyweather.WeatherMap;
 import github.vatsal.easyweather.retrofit.models.ForecastResponseModel;
-import github.vatsal.easyweather.retrofit.models.Sys;
 import github.vatsal.easyweather.retrofit.models.Weather;
 import github.vatsal.easyweather.retrofit.models.WeatherResponseModel;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -31,7 +28,6 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.administrator.weather.MainActivity;
 import com.example.ccy.miuiweatherline.MiuiWeatherView;
 import com.example.ccy.miuiweatherline.WeatherBean;
 import com.mobileappeng.threegorgeous.projrutransit.RecycleView_RU_Transit.DataBean;
@@ -40,7 +36,6 @@ import com.mobileappeng.threegorgeous.projrutransit.RecycleView_RU_Transit.Recyc
 import com.squareup.picasso.Picasso;
 //import com.mobileappeng.threegorgeous.projrutransit.gson.Weather;
 
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -149,11 +144,11 @@ public class TodaySummaryActivity extends AppCompatActivity {
         btn_click_plus_bus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
+
+                startActivityForResult(new Intent(TodaySummaryActivity.this, FavouriteActivity.class),1);
                 Toast.makeText(TodaySummaryActivity.this,"Button点击事件1",Toast.LENGTH_LONG).show();
             }
         });
-
-
 
 
 
