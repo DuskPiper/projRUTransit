@@ -9,15 +9,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mobileappeng.threegorgeous.projrutransit.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
     private LayoutInflater mInflater;
-    private List<Integer> mDatas;
+    private List<String> mDatas;
     private List<String> timelist;
     private List<String> wendulist;
-    public GalleryAdapter(Context context, List<Integer> datats, List<String> data,List<String> wendu) {
+    private Context mContext;
+    public GalleryAdapter(Context context, List<String> datats, List<String> data,List<String> wendu) {
+        mContext=context;
         mInflater = LayoutInflater.from(context);
         mDatas = datats;
         timelist=data;
@@ -60,7 +63,15 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
      */
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
-        viewHolder.weather_item.setImageResource(mDatas.get(i));
+        if(mDatas.get(i).equals(""))
+        {
+            Picasso.with(mContext).load("http://openweathermap.org/img/w/02d.png").into(viewHolder.weather_item);
+        }
+        else
+            {
+                Picasso.with(mContext).load(mDatas.get(i)).into(viewHolder.weather_item);
+            }
+
         viewHolder.weather_time.setText(timelist.get(i));
         viewHolder.weather_wendu.setText(wendulist.get(i));
     }

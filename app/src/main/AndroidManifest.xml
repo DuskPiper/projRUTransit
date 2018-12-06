@@ -41,7 +41,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".SettingsActivity" />
-        <activity android:name=".TodaySummaryActivity"></activity>
+        <activity android:name=".TodaySummaryActivity"/>
+        <activity android:name=".FavouriteActivity">
+        </activity>
     </application>
 
 </manifest>

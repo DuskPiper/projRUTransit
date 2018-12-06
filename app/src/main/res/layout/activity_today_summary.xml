@@ -59,6 +59,44 @@
                 app:layout_constraintTop_toBottomOf="@+id/wendu_image_view" />
 
             <ImageView
+                android:id="@+id/fengsu_image_view"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="92dp"
+                android:layout_marginTop="36dp"
+                android:src="@drawable/windspeedlogo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/fengsu_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="fengsu"
+                app:layout_constraintEnd_toEndOf="@+id/fengsu_image_view"
+                app:layout_constraintStart_toStartOf="@+id/fengsu_image_view"
+                app:layout_constraintTop_toBottomOf="@+id/fengsu_image_view" />
+
+            <ImageView
+                android:id="@+id/qiya_image_view"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="84dp"
+                android:src="@drawable/pressurelogo"
+                app:layout_constraintEnd_toEndOf="@+id/fengsu_image_view"
+                app:layout_constraintStart_toStartOf="@+id/fengsu_image_view"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/qiya_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="qiya"
+                app:layout_constraintEnd_toEndOf="@+id/qiya_image_view"
+                app:layout_constraintStart_toStartOf="@+id/qiya_image_view"
+                app:layout_constraintTop_toBottomOf="@+id/qiya_image_view" />
+
+            <ImageView
                 android:id="@+id/shidu_image_view"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
@@ -111,6 +149,22 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/shidu_textView"
                 />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="    In the next days:.."
+                app:layout_constraintTop_toBottomOf="@+id/bus_timetable"
+                 />
+
+            <Button
+                android:id="@+id/btn_click_plus_bus"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="+"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toBottomOf="@+id/bus_timetable"
+                app:layout_constraintEnd_toEndOf="@+id/bus_timetable" />
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/hourly_weather"
                 android:layout_width="0dp"
