@@ -23,11 +23,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.administrator.weather.MainActivity;
 import com.example.ccy.miuiweatherline.MiuiWeatherView;
 import com.example.ccy.miuiweatherline.WeatherBean;
 import com.mobileappeng.threegorgeous.projrutransit.RecycleView_RU_Transit.DataBean;
@@ -52,7 +56,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
     private GalleryAdapter hourly_weather_adapter;
     private TextView city_text_view;
     private TextView all_the_day_textview;
-    private List<Integer> mDatas;
+    private List<String> mDatas;
     private List<String> titles;
     private List<String> wendu;
     private List<Map<String, Object>> bus_data = new ArrayList<Map<String, Object>>();
@@ -65,13 +69,27 @@ public class TodaySummaryActivity extends AppCompatActivity {
     private ImageView all_the_day_weather_imageview;
     private TextView wendu_textview;
     private TextView shidu_textview;
+    private String[] url_list;
+    private TextView qiya_textview;
+    private TextView fengsu_textview;
+    private Button btn_click_plus_bus;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_today_summary);
+        url_list=new String[5];
+        url_list[0]="";
+        url_list[1]="";
+        url_list[2]="";
+        url_list[3]="";
+        url_list[4]="";
 
         bus_timetable=(ListView) findViewById(R.id.bus_timetable);
         hourly_weather=(RecyclerView) findViewById(R.id.hourly_weather);
+
+        btn_click_plus_bus=(Button) findViewById(R.id.btn_click_plus_bus);
+        qiya_textview =(TextView) findViewById(R.id.qiya_textView);
+        fengsu_textview =(TextView) findViewById(R.id.fengsu_textView);
 
         city_text_view =(TextView) findViewById(R.id.city_textView);
         city_text_view.setText("Piscataway");
@@ -105,17 +123,9 @@ public class TodaySummaryActivity extends AppCompatActivity {
                 new int[]{R.id.bus_name,R.id.bus_time}
                 );
         bus_timetable.setAdapter(bus_CursorAdapter);
-        initWeather_Datas();
 
 
 
-        hourly_weather_adapter=new GalleryAdapter(this,mDatas,titles,wendu);
-        LinearLayoutManager ms= new LinearLayoutManager(this);
-        ms.setOrientation(LinearLayoutManager.HORIZONTAL);
-        hourly_weather.setLayoutManager(ms);
-        hourly_weather.setAdapter(hourly_weather_adapter);
-        hourly_weather.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
-        hourly_weather_adapter.notifyDataSetChanged();
 
 
         navigation = (NavigationView)findViewById(R.id.navigation);
@@ -125,6 +135,25 @@ public class TodaySummaryActivity extends AppCompatActivity {
             navigation.getMenu().getItem(i).setChecked(false);
         }
         drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
+
+        initWeather_Datas();
+        hourly_weather_adapter=new GalleryAdapter(this,mDatas,titles,wendu);
+        LinearLayoutManager ms= new LinearLayoutManager(this);
+        ms.setOrientation(LinearLayoutManager.HORIZONTAL);
+        hourly_weather.setLayoutManager(ms);
+        hourly_weather.setAdapter(hourly_weather_adapter);
+        hourly_weather.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        hourly_weather.setHasFixedSize(true);
+
+
+        btn_click_plus_bus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                Toast.makeText(TodaySummaryActivity.this,"Button点击事件1",Toast.LENGTH_LONG).show();
+            }
+        });
+
+
 
 
 
@@ -227,15 +256,16 @@ public class TodaySummaryActivity extends AppCompatActivity {
     private void initWeather_Datas()
     {
         mDatas = new ArrayList<>(Arrays.asList(
-                R.drawable.sunny,
-                R.drawable.sunandcloud,
-                R.drawable.cloudy,
-                R.drawable.bigsnowy,
-                R.drawable.bigrain
+                url_list[0],
+        url_list[1],
+        url_list[2],
+        url_list[3],
+        url_list[4]
                 ));
         titles = new ArrayList<>(Arrays.asList("1:00","23:00","1:00","23:00","1:00"));
-        wendu = new ArrayList<>(Arrays.asList("0","10","20","30","24"));
+        wendu = new ArrayList<>(Arrays.asList("","","","",""));
     }
+
 
 
     private List<Map<String, Object>> get_bus_data()
@@ -292,12 +322,18 @@ public class TodaySummaryActivity extends AppCompatActivity {
                 String pressure = response.getMain().getPressure();
                 String windSpeed = response.getWind().getSpeed();
                 String des1= weather[0].getDescription();
-                String iconLink = weather[0].getIconLink();
                 String link = weather[0].getIconLink();
                 Picasso.with(getApplicationContext()).load(link).into(all_the_day_weather_imageview);
+                System.out.println("Test getBase:"+response.getBase());
+                System.out.println("Test getCod:"+response.getCod());
+                System.out.println("Test getMessage:"+response.getSys().getMessage());
+                System.out.println("Test getDt:"+response.getDt());
                 all_the_day_textview.setText(des1);
+                city_text_view.setText(location);
                 wendu_textview.setText(""+Math.round(temperature)+"\u2103");
                 shidu_textview.setText(humidity+"%");
+                qiya_textview.setText(pressure);
+                fengsu_textview.setText(windSpeed);
             }
             @Override
             public void failure(String message) {
@@ -309,22 +345,44 @@ public class TodaySummaryActivity extends AppCompatActivity {
             @Override
             public void success(ForecastResponseModel response) {
                 //ForecastResponseModel responseModel = response;
-                Weather weather1[] = response.getList()[1].getWeather();
+                Weather weather1[] = response.getList()[0].getWeather();
+
                 String des1= weather1[0].getDescription();
                 String Icon1=weather1[0].getIconLink();
-                Weather weather2[] = response.getList()[2].getWeather();
+                Weather weather2[] = response.getList()[8].getWeather();
                 String des2= weather2[0].getDescription();
                 String Icon2=weather2[0].getIconLink();
-                Weather weather3[] = response.getList()[3].getWeather();
+                Weather weather3[] = response.getList()[18].getWeather();
                 String des3= weather3[0].getDescription();
                 String Icon3=weather3[0].getIconLink();
-                Weather weather4[] = response.getList()[4].getWeather();
+                Weather weather4[] = response.getList()[28].getWeather();
                 String des4= weather4[0].getDescription();
                 String Icon4=weather4[0].getIconLink();
-                Weather weather5[] = response.getList()[5].getWeather();
+                Weather weather5[] = response.getList()[37].getWeather();
                 String des5= weather5[0].getDescription();
                 String Icon5=weather5[0].getIconLink();
-                System.out.println("Descrtption"+des1);
+
+                url_list[0]=Icon1;
+                url_list[1]=Icon2;
+                url_list[2]=Icon3;
+                url_list[3]=Icon4;
+                url_list[4]=Icon5;
+
+                mDatas.clear();
+                mDatas.add(url_list[0]);
+                mDatas.add(url_list[1]);
+                mDatas.add(url_list[2]);
+                mDatas.add(url_list[3]);
+                mDatas.add(url_list[4]);
+
+                titles.clear();
+                titles.add(des1);
+                titles.add(des2);
+                titles.add(des3);
+                titles.add(des4);
+                titles.add(des5);
+
+                hourly_weather_adapter.notifyDataSetChanged();
                 //  }
             }
 
