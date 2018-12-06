@@ -52,7 +52,7 @@ public class NextBusAPI {
                 saxParser = factory.newSAXParser();
             }
             InputStream inputStream = downloadUrl(url);
-            Log.d("SAX", "Fetched stream from url = " + url);
+            // Log.d("SAX", "Fetched stream from url = " + url);
             if (inputStream == null) {
                 throw new IOException("Can't connect to the Internet");
             } else {
