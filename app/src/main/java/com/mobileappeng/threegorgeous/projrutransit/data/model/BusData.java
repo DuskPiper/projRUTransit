@@ -101,4 +101,20 @@ public class BusData {
 
         return closestStop;
     }
+
+    public BusRoute[] getRoutesAtStop(BusStop busStop) {
+        String stopTitle = busStop.getTitle();
+        TreeSet<BusRoute> routesHere = new TreeSet<>();
+        ArrayList<BusRoute> allRoutes = getActiveRoutes();
+        for (BusRoute route : allRoutes) {
+            BusStop[] stopsAtRoute = route.getBusStops();
+            for (BusStop checkStop : stopsAtRoute) {
+                if (checkStop.getTitle().equals(stopTitle)) {
+                    routesHere.add(route);
+                    break;
+                }
+            }
+        }
+        return routesHere.toArray(new BusRoute[routesHere.size()]);
+    }
 }
