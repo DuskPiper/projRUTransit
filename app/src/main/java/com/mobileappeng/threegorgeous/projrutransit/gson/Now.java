@@ -16,9 +16,9 @@ public class Now {
 
     public String hum;//湿度
 
-    public String wind_dir;//风向(风向+风速)
+    public String wind_dir;//风向(风向+windspeedlogo)
 
-    public String wind_spd;//风速(风向+风速)
+    public String wind_spd;//windspeedlogo(风向+windspeedlogo)
 
     public String fl;//体感温度
 
