@@ -10,6 +10,7 @@
         android:id="@+id/favourite_bus_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="20dp"
         android:text="Bus:"
         app:layout_constraintTop_toTopOf="parent"
         />
