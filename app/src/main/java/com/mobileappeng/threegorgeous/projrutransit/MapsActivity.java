@@ -92,6 +92,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             navigation.getMenu().getItem(i).setCheckable(true);
             navigation.getMenu().getItem(i).setChecked(false);
         }
+        refreshNavigationRoutes();
         drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
 
         // Initialize UI
@@ -148,45 +149,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     return true;
                     case R.id.navigation_1:
                         showRoute="b";
-
-                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
-                        {
-                            moveCamera(40.498, -74.445, 13); // all campuses
-                            showRoute = "wknd1";
-                            navigation.getMenu().findItem(R.id.navigation_1).setTitle("Weekend1");
-                            navigation.getMenu().findItem(R.id.navigation_2).setTitle("Weekend2");
-                            navigation.getMenu().findItem(R.id.navigation_3).setCheckable(false);
-                            navigation.getMenu().findItem(R.id.navigation_4).setCheckable(false);
-                            navigation.getMenu().findItem(R.id.navigation_5).setCheckable(false);
-                            navigation.getMenu().findItem(R.id.navigation_6).setCheckable(false);
-                            navigation.getMenu().findItem(R.id.navigation_7).setCheckable(false);
-                            navigation.getMenu().findItem(R.id.navigation_8).setCheckable(false);
-                            navigation.getMenu().findItem(R.id.navigation_9).setCheckable(false);
-                            navigation.getMenu().findItem(R.id.navigation_10).setCheckable(false);
-                            navigation.getMenu().findItem(R.id.navigation_3).setTitle("");
-                            navigation.getMenu().findItem(R.id.navigation_4).setTitle("");
-                            navigation.getMenu().findItem(R.id.navigation_5).setTitle("");
-                            navigation.getMenu().findItem(R.id.navigation_6).setTitle("");
-                            navigation.getMenu().findItem(R.id.navigation_7).setTitle("");
-                            navigation.getMenu().findItem(R.id.navigation_8).setTitle("");
-                            navigation.getMenu().findItem(R.id.navigation_9).setTitle("");
-                            navigation.getMenu().findItem(R.id.navigation_10).setTitle("");
-                        }
-                        else
-                        {
-                            moveCamera(40.5243, -74.451, 14); // Busch + Liv
-                            navigation.getMenu().findItem(R.id.navigation_1).setTitle("B");
-                            navigation.getMenu().findItem(R.id.navigation_2).setTitle("EE");
-                            navigation.getMenu().findItem(R.id.navigation_3).setTitle("F");
-                            navigation.getMenu().findItem(R.id.navigation_4).setTitle("H");
-                            navigation.getMenu().findItem(R.id.navigation_5).setTitle("LX");
-                            navigation.getMenu().findItem(R.id.navigation_6).setTitle("REXB");
-                            navigation.getMenu().findItem(R.id.navigation_7).setTitle("REXL");
-                            navigation.getMenu().findItem(R.id.navigation_8).setTitle("RBHS");
-                            navigation.getMenu().findItem(R.id.navigation_9).setTitle("A");
-                            navigation.getMenu().findItem(R.id.navigation_10).setTitle("C");
-                        }
-
                         route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get(showRoute);
                         drawRoute();
                         Log.d("Navigation", "Seleted B Route");
@@ -387,6 +349,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Collections.sort(activeRouteTags);
     }
 
+    private void refreshNavigationRoutes() {
+        if (navigation != null) {
+            if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+            {
+                moveCamera(40.498, -74.445, 13); // all campuses
+                showRoute = "wknd1";
+                navigation.getMenu().findItem(R.id.navigation_1).setTitle("Weekend1");
+                navigation.getMenu().findItem(R.id.navigation_2).setTitle("Weekend2");
+                navigation.getMenu().findItem(R.id.navigation_3).setCheckable(false);
+                navigation.getMenu().findItem(R.id.navigation_4).setCheckable(false);
+                navigation.getMenu().findItem(R.id.navigation_5).setCheckable(false);
+                navigation.getMenu().findItem(R.id.navigation_6).setCheckable(false);
+                navigation.getMenu().findItem(R.id.navigation_7).setCheckable(false);
+                navigation.getMenu().findItem(R.id.navigation_8).setCheckable(false);
+                navigation.getMenu().findItem(R.id.navigation_9).setCheckable(false);
+                navigation.getMenu().findItem(R.id.navigation_10).setCheckable(false);
+                navigation.getMenu().findItem(R.id.navigation_3).setTitle("");
+                navigation.getMenu().findItem(R.id.navigation_4).setTitle("");
+                navigation.getMenu().findItem(R.id.navigation_5).setTitle("");
+                navigation.getMenu().findItem(R.id.navigation_6).setTitle("");
+                navigation.getMenu().findItem(R.id.navigation_7).setTitle("");
+                navigation.getMenu().findItem(R.id.navigation_8).setTitle("");
+                navigation.getMenu().findItem(R.id.navigation_9).setTitle("");
+                navigation.getMenu().findItem(R.id.navigation_10).setTitle("");
+            }
+            else
+            {
+                moveCamera(40.5243, -74.451, 14); // Busch + Liv
+                navigation.getMenu().findItem(R.id.navigation_1).setTitle("B");
+                navigation.getMenu().findItem(R.id.navigation_2).setTitle("EE");
+                navigation.getMenu().findItem(R.id.navigation_3).setTitle("F");
+                navigation.getMenu().findItem(R.id.navigation_4).setTitle("H");
+                navigation.getMenu().findItem(R.id.navigation_5).setTitle("LX");
+                navigation.getMenu().findItem(R.id.navigation_6).setTitle("REXB");
+                navigation.getMenu().findItem(R.id.navigation_7).setTitle("REXL");
+                navigation.getMenu().findItem(R.id.navigation_8).setTitle("RBHS");
+                navigation.getMenu().findItem(R.id.navigation_9).setTitle("A");
+                navigation.getMenu().findItem(R.id.navigation_10).setTitle("C");
+            }
+        }
+    }
+
     private void refreshShownRoute() {
         route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get(showRoute);
         drawRoute();
@@ -461,6 +465,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onResume() {
         super.onResume();
+        refreshNavigationRoutes();
         if (timer != null) {
             timer.schedule(timedRouteRefresher, 3000, 5000);
         }

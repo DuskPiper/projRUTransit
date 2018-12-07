@@ -71,7 +71,9 @@ public class FavouriteActivity extends AppCompatActivity {
                     editor.putInt("Number",count);
                     editor.commit();
 
-                    startActivity(new Intent(FavouriteActivity.this, TodaySummaryActivity.class));
+                    // startActivity(new Intent(FavouriteActivity.this, TodaySummaryActivity.class));
+                    FavouriteActivity.this.setResult(RESULT_OK);
+                    FavouriteActivity.this.finish();
                 }
                 initeBut_stop(position);
                 //Toast.makeText(getContext()," 点击了 "+position,Toast.LENGTH_SHORT).show();
@@ -93,9 +95,8 @@ public class FavouriteActivity extends AppCompatActivity {
         favourite_bus_stop_recycleview.setLayoutManager(new LinearLayoutManager(this));
         favourite_bus_stop_recycleview.setAdapter(favourite_stop_adapter);
         favourite_bus_stop_recycleview.setVisibility(RecyclerView.INVISIBLE);
-
-
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -106,17 +107,16 @@ public class FavouriteActivity extends AppCompatActivity {
                 click_time=0;
             }
             else{
-            Intent intent = new Intent(this, TodaySummaryActivity.class);
+            /*Intent intent = new Intent(this, TodaySummaryActivity.class);
             startActivity(intent);
-            finish();
+            finish();*/
+            FavouriteActivity.this.setResult(RESULT_CANCELED);
+            FavouriteActivity.this.finish();
             }
         }
         return true;
     }
 private void initBusdate(){
-
-
-
     bus_list = new ArrayList<>(Arrays.asList(
             "ee", "penn"));
     bus_list.clear();
