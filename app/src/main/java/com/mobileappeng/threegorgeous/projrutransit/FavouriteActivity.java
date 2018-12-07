@@ -1,7 +1,9 @@
 package com.mobileappeng.threegorgeous.projrutransit;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.support.annotation.Nullable;
@@ -17,9 +19,15 @@ import com.mobileappeng.threegorgeous.projrutransit.data.constants.RUTransitApp;
 import com.mobileappeng.threegorgeous.projrutransit.data.model.BusRoute;
 import com.mobileappeng.threegorgeous.projrutransit.data.model.BusStop;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import static com.mobileappeng.threegorgeous.projrutransit.data.constants.RUTransitApp.getContext;
 
@@ -32,19 +40,42 @@ public class FavouriteActivity extends AppCompatActivity {
     private List<String> bus_list;
     private List<String> stop_list;
     private OnRecyclerviewItemClickListener onRecyclerviewItemClickListener;
+    private String bus_judge;
+    private String stop_judge;
+    private int click_time;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.acticity_favourite);
+        click_time=0;
 
         initBusdate();
         onRecyclerviewItemClickListener = new OnRecyclerviewItemClickListener() {
             @Override
             public void onItemClickListener(View v, int position) {
-                //这里的view就是我们点击的view  position就是点击的position
+
+                click_time+=1;
+                if(click_time==1)
+                {
+                    bus_judge=bus_list.get(position);
+                }
+                if(click_time==2)
+                {
+                    stop_judge=stop_list.get(position);
+                    SharedPreferences sharedPreferences = getSharedPreferences("Favourite_Stop", Context.MODE_PRIVATE); //私有数据
+                    int count=sharedPreferences.getInt("Number",0);
+                    count+=1;
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("Bus_Route"+count, bus_judge);
+                    editor.putString("Bus_Stop"+count, stop_judge);
+                    editor.putInt("Number",count);
+                    editor.commit();
+
+                    startActivity(new Intent(FavouriteActivity.this, TodaySummaryActivity.class));
+                }
                 initeBut_stop(position);
-                Toast.makeText(getContext()," 点击了 "+position,Toast.LENGTH_SHORT).show();
-                favourite_route_recycleview.setVisibility(RecyclerView.GONE);
+                //Toast.makeText(getContext()," 点击了 "+position,Toast.LENGTH_SHORT).show();
+                favourite_route_recycleview.setVisibility(RecyclerView.INVISIBLE);
                 favourite_bus_stop_recycleview.setVisibility(RecyclerView.VISIBLE);
 
             }
@@ -68,10 +99,17 @@ public class FavouriteActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            //点击完返回键，执行的动作
+            if(favourite_route_recycleview.getVisibility()==RecyclerView.INVISIBLE)
+            {
+                favourite_route_recycleview.setVisibility(RecyclerView.VISIBLE);
+                favourite_bus_stop_recycleview.setVisibility(RecyclerView.INVISIBLE);
+                click_time=0;
+            }
+            else{
             Intent intent = new Intent(this, TodaySummaryActivity.class);
             startActivity(intent);
             finish();
+            }
         }
         return true;
     }
@@ -80,8 +118,7 @@ private void initBusdate(){
 
 
     bus_list = new ArrayList<>(Arrays.asList(
-            "ee", "penn", "pennexpr", "a", "b", "c", "housing", "f", "h", "rexb", "mdntpenn", "lx", "rbhs", "rexl", "s", "kearney", "wknd2", "wknd1", "w1", "w2", "ccexp", "connect"
-    ));
+            "ee", "penn"));
     bus_list.clear();
     ArrayList<BusRoute> busRoutes = RUTransitApp.getBusData().getBusRoutes();
     ArrayList<String> busRoutesList = new ArrayList<>();
@@ -103,14 +140,12 @@ private void initeBut_stop(int position){
     BusRoute selectedBusRoute = busRoutes.get(position);
     stop_list.clear();
     BusStop[] busStopsAtRoute = selectedBusRoute.getBusStops();
-    ArrayList<String> busStopList = new ArrayList<>();
     for (BusStop busStop : busStopsAtRoute) {
         stop_list.add(busStop.getTitle()); //// show this
     }
-    favourite_stop_adapter.notifyDataSetChanged();
+    if(click_time!=2) {
+        favourite_stop_adapter.notifyDataSetChanged();
+    }
 }
-
-
-
 
 }
