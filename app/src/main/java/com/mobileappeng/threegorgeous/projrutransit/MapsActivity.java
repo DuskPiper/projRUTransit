@@ -2,6 +2,7 @@ package com.mobileappeng.threegorgeous.projrutransit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -52,6 +53,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+    private boolean DEBUG_CLEAR_SHARED_PREFERENCE = false;
     private GoogleMap mMap;
     private NavigationView navigation;
     private DrawerLayout drawer;
@@ -119,6 +121,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         };
         //timer.schedule(timedRouteRefresher, 3000, 5000);
+
+        // Debug check
+        if (DEBUG_CLEAR_SHARED_PREFERENCE) {
+            getSharedPreferences("Favourite_Stop", Context.MODE_PRIVATE).edit().clear().commit();
+        }
 
         // Set Listeners
         navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {

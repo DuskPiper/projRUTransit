@@ -95,6 +95,9 @@ public class TodaySummaryActivity extends AppCompatActivity {
         url_list[3]="";
         url_list[4]="";
 
+        favouriteBusData = new ArrayList<Map<String, Object>>();
+        new FindRecentBuses().execute();
+
         bus_timetable=(ListView) findViewById(R.id.bus_timetable);
         hourly_weather=(RecyclerView) findViewById(R.id.hourly_weather);
         scrollView=(ScrollView)findViewById(R.id.scrollView);
@@ -124,13 +127,10 @@ public class TodaySummaryActivity extends AppCompatActivity {
         data.add(b2);
         weatherView.setData(data);
 
-        new FindRecentBuses().execute("b", "hillw");
-
-
-
 
         bus_CursorAdapter=new SimpleAdapter(TodaySummaryActivity.this,
-                loadFavouriteBusData(),
+                /*loadFavouriteBusData(),*/
+                favouriteBusData,
                 R.layout.activity_today_summary_list_item,
                 new String[]{"bus_name","bus_time"},
                 new int[]{R.id.bus_name,R.id.bus_time}
@@ -204,7 +204,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
         }
         drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
 
-        initWeather_Datas();
+        initWeatherData();
         hourly_weather_adapter=new GalleryAdapter(this,mDatas,titles,wendu);
         LinearLayoutManager ms= new LinearLayoutManager(this);
         ms.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -319,7 +319,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
 
     }
 
-    private void initWeather_Datas()
+    private void initWeatherData()
     {
         mDatas = new ArrayList<>(Arrays.asList(
                 url_list[0],
@@ -461,11 +461,38 @@ public class TodaySummaryActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onActivityResult (int requestCode, int resultCode, Intent data) {
+        new FindRecentBuses().execute();
+    }
+
     private class FindRecentBuses extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
-            String route = params[0];
-            String stop = params[1];
+            SharedPreferences sp = getSharedPreferences("Favourite_Stop",Activity.MODE_PRIVATE);
+            int count = sp.getInt("Number",0);
+            favouriteBusData = new ArrayList<Map<String, Object>>();
+            for (int i = 1; i <= count; i++) {
+                // Load from shared preference
+                Map<String, Object> item = new HashMap<String, Object>();
+                String route = sp.getString("Bus_Route" + i,"N/A");
+                String stop = sp.getString("Bus_Stop" + i,"N/A");
+                // Query for data and update to in-memory storage
+                item.put("bus_name", route + " @ " + stop);
+                item.put("bus_time", findRecentBusesOfRouteAtStop(route, stop));
+                favouriteBusData.add(item);
+            }
+            return "OK";
+        }
+
+        @Override
+        protected void onPostExecute(String resultText) {
+            if (resultText.equals("OK")) {
+                bus_CursorAdapter.notifyDataSetChanged();
+            }
+        }
+
+        private String findRecentBusesOfRouteAtStop (String route, String stop) {
             // Init data
             ArrayList<String> routeBusVehicleIds = new ArrayList<>();
             ArrayList<BusStopTime> stopTimes = new ArrayList<>();
@@ -520,67 +547,5 @@ public class TodaySummaryActivity extends AppCompatActivity {
                 return result;
             }
         }
-
-        @Override
-        protected void onPostExecute(String resultText) {
-
-        }
     }
-
-    /*private String findRecentBuses(String route, String stop) {
-        // Init data
-        ArrayList<String> routeBusVehicleIds = new ArrayList<>();
-        ArrayList<BusStopTime> stopTimes = new ArrayList<>();
-        List<BusStop> allBusStops = new ArrayList<>();
-        ArrayList<Integer> targetTimes = new ArrayList<>();
-        // Get all bus ids in queried route
-        ArrayList<BusVehicle> routeBusVehicles =
-                RUTransitApp.getBusData().getBusTagsToBusRoutes().get(route).getActiveBuses();
-        for (BusVehicle bus : routeBusVehicles) {
-            routeBusVehicleIds.add(bus.getVehicleId());
-        }
-        // Get all BusStopTime at queried bus stop
-        allBusStops = Arrays.asList(RUTransitApp.getBusData().getAllBusStops());
-        for (BusRoute findRoute : BusData.getActiveRoutes()) {
-            if (findRoute.getTag().equals(route)) {
-                allBusStops = Arrays.asList(findRoute.getBusStops());
-                Log.e("TEST DEBUG FIND", allBusStops.toString());
-                NextBusAPI.saveBusStopTimes(findRoute);
-            }
-        }
-        if (allBusStops == null) {
-            return "";
-        } else {
-            for (BusStop checkStop : allBusStops) {
-                if (checkStop.getTag().equals(stop)) {
-                    stopTimes = checkStop.getTimes();
-                    break;
-                }
-            }
-        }
-        // Filter BusStopTime and find out time for needed route
-        if (stopTimes == null) {
-            return "";
-        } else {
-            for (BusStopTime stopTime : stopTimes) {
-                if (routeBusVehicleIds.contains(stopTime.getVehicleId())) {
-                    targetTimes.add(stopTime.getMinutes());
-                }
-            }
-        }
-        // toString
-        Collections.sort(targetTimes);
-        if (targetTimes.size() == 0) {
-            return "";
-        } else {
-            StringBuilder sb = new StringBuilder();
-            for (int targetTime : targetTimes) {
-                sb.append(targetTime).append(" / ");
-            }
-            sb.setLength(sb.length() - 3);
-            return sb.toString();
-        }
-    }*/
-
-
 }
