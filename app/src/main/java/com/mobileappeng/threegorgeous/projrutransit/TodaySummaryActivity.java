@@ -9,7 +9,9 @@ import github.vatsal.easyweather.retrofit.models.ForecastResponseModel;
 import github.vatsal.easyweather.retrofit.models.Weather;
 import github.vatsal.easyweather.retrofit.models.WeatherResponseModel;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -20,10 +22,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,6 +73,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
     private TextView qiya_textview;
     private TextView fengsu_textview;
     private Button btn_click_plus_bus;
+    private ScrollView scrollView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +87,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
 
         bus_timetable=(ListView) findViewById(R.id.bus_timetable);
         hourly_weather=(RecyclerView) findViewById(R.id.hourly_weather);
-
+        scrollView=(ScrollView)findViewById(R.id.scrollView);
         btn_click_plus_bus=(Button) findViewById(R.id.btn_click_plus_bus);
         qiya_textview =(TextView) findViewById(R.id.qiya_textView);
         fengsu_textview =(TextView) findViewById(R.id.fengsu_textView);
@@ -119,7 +125,62 @@ public class TodaySummaryActivity extends AppCompatActivity {
                 );
         bus_timetable.setAdapter(bus_CursorAdapter);
 
+        bus_timetable.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
+                /*SharedPreferences share=getSharedPreferences("Favourite_Stop",Activity.MODE_WORLD_READABLE);
+                int count=share.getInt("Number",0);
+                for (int i = position+1; i <=count; i++) {
+                    Map<String, Object> item = new HashMap<String, Object>();
+
+                    String route=share.getString("Bus_Route"+i,"No_data");
+                    String stop=share.getString("Bus_Stop"+i,"No_data");
+                    int next=i+1;
+                    String route_next=share.getString("Bus_Route"+next,"No_data");
+                    String stop_next=share.getString("Bus_Stop"+next,"No_data");
+                    if(route_next=="No_data")
+                    {
+                        route_next="";
+                        stop_next="";
+                    }
+                    SharedPreferences.Editor editor = share.edit();
+                    editor.putString("Bus_Route"+i, route_next);
+                    editor.putString("Bus_Stop"+i, stop_next);
+                    editor.putInt("Number",count);
+                    editor.commit();
+
+                }
+                count-=1;
+                SharedPreferences.Editor editor = share.edit();
+                editor.putInt("Number",count);
+                editor.commit();
+                get_bus_data();
+                bus_CursorAdapter.notifyDataSetChanged();*/
+                return false;
+            }
+        });
+
+
+
+        bus_timetable.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    // 当手指触摸listview时，让父控件焦点,不能滚动
+                    case MotionEvent.ACTION_DOWN:
+                        scrollView.requestDisallowInterceptTouchEvent(true);
+                    case MotionEvent.ACTION_MOVE:
+                        break;
+
+                    case MotionEvent.ACTION_CANCEL:
+                        // 当手指松开时，让父控件重新获取焦点
+                        scrollView.requestDisallowInterceptTouchEvent(false);
+                        break;
+                }
+                return false;
+            }
+        });
 
 
 
@@ -146,7 +207,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
             public void onClick(View v){
 
                 startActivityForResult(new Intent(TodaySummaryActivity.this, FavouriteActivity.class),1);
-                Toast.makeText(TodaySummaryActivity.this,"Button点击事件1",Toast.LENGTH_LONG).show();
+                //Toast.makeText(TodaySummaryActivity.this,"Button点击事件1",Toast.LENGTH_LONG).show();
             }
         });
 
@@ -265,12 +326,18 @@ public class TodaySummaryActivity extends AppCompatActivity {
 
     private List<Map<String, Object>> get_bus_data()
     {
-        for (int i = 0; i < 10; i++) {
+        SharedPreferences share=getSharedPreferences("Favourite_Stop",Activity.MODE_WORLD_READABLE);
+        int count=share.getInt("Number",0);
+        for (int i = 1; i <=count; i++) {
             Map<String, Object> item = new HashMap<String, Object>();
-            item.put("bus_name", "bus"+i);
-            item.put("bus_time", "time" + i);
+
+            String route=share.getString("Bus_Route"+i,"No_data");
+            String stop=share.getString("Bus_Stop"+i,"No_data");
+
+            item.put("bus_name", route);
+            item.put("bus_time", stop);
             bus_data.add(item);
-        }
+    }
         return bus_data;
 
     }
