@@ -73,6 +73,7 @@
                 android:id="@+id/fengsu_textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
                 android:hint="fengsu"
                 app:layout_constraintEnd_toEndOf="@+id/fengsu_image_view"
                 app:layout_constraintStart_toStartOf="@+id/fengsu_image_view"
@@ -152,9 +153,12 @@
                 />
 
             <TextView
+                android:id="@+id/next_days_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="    In the next days:.."
+                android:layout_marginTop="10dp"
+                android:textSize="20dp"
+                android:text="  In the next days:.."
                 app:layout_constraintTop_toBottomOf="@+id/bus_timetable"
                  />
 
@@ -164,17 +168,17 @@
                 android:layout_height="40dp"
                 android:text="+"
                 android:textSize="20dp"
-                app:layout_constraintBottom_toBottomOf="@+id/bus_timetable"
+                app:layout_constraintTop_toBottomOf="@+id/bus_timetable"
                 app:layout_constraintEnd_toEndOf="@+id/bus_timetable" />
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/hourly_weather"
                 android:layout_width="0dp"
                 android:layout_height="100dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="5dp"
                 android:scrollbars="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bus_timetable" />
+                app:layout_constraintTop_toBottomOf="@+id/next_days_textview" />
 
             <com.example.ccy.miuiweatherline.MiuiWeatherView
                 android:id="@+id/Miui_weather_view"
