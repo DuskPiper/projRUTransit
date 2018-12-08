@@ -149,8 +149,8 @@ public class TodaySummaryActivity extends AppCompatActivity {
         bus_timetable.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
-                /*SharedPreferences share=getSharedPreferences("Favourite_Stop",Activity.MODE_WORLD_READABLE);
+                Log.d("Bus_timetale", "Long Click");
+                SharedPreferences share=getSharedPreferences("Favourite_Stop",Activity.MODE_PRIVATE);
                 int count=share.getInt("Number",0);
                 for (int i = position+1; i <=count; i++) {
                     Map<String, Object> item = new HashMap<String, Object>();
@@ -172,12 +172,17 @@ public class TodaySummaryActivity extends AppCompatActivity {
                     editor.commit();
 
                 }
-                count-=1;
                 SharedPreferences.Editor editor = share.edit();
+                editor.remove("Bus_Route"+count);
+                editor.remove("Bus_Stop"+count);
+                count-=1;
+
                 editor.putInt("Number",count);
                 editor.commit();
+              
                 loadFavouriteBusData();
                 bus_CursorAdapter.notifyDataSetChanged();*/
+
                 return false;
             }
         });
@@ -346,6 +351,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
         SharedPreferences share=getSharedPreferences("Favourite_Stop",Activity.MODE_PRIVATE);
         int count = share.getInt("Number",0);
         for (int i = 1; i <= count; i++) {
+
             Map<String, Object> item = new HashMap<String, Object>();
 
             String route = share.getString("Bus_Route" + i,"No_data");
