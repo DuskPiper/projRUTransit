@@ -157,7 +157,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         startActivity(new Intent(MapsActivity.this, SettingsActivity.class));
                     return true;
                     case R.id.navigation_1:
-                        showRoute="b";
+                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        {
+                            moveCamera(40.498, -74.445, 13); // all campuses
+                            showRoute = "wknd2";
+                        } else {
+                            moveCamera(40.5246, -74.4528, 14); // Busch + Liv
+                            showRoute = "b";
+                        }
                         route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get(showRoute);
                         drawRoute();
                         Log.d("Navigation", "Seleted B Route");
