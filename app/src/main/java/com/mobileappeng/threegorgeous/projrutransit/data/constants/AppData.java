@@ -13,4 +13,10 @@ public class AppData {
     public static final int PAGE_CLICKED_FROM_DIMEN = 2;
     public static final int ORIGIN_DIMEN = 3;
     public static final int DESTINATION_DIMEN = 4;*/
+
+    // Shared Preferences
+    public static final String ROUTE_TAG = "bus_route_tag";
+    public static final String ROUTE_NAME = "bus_route_name";
+    public static final String STOP_TAG = "bus_stop_tag";
+    public static final String STOP_NAME = "bus_stop_name";
 }

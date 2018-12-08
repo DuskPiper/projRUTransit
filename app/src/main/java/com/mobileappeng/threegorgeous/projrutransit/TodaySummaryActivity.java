@@ -12,6 +12,7 @@ import github.vatsal.easyweather.retrofit.models.WeatherResponseModel;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -38,14 +39,27 @@ import com.example.ccy.miuiweatherline.WeatherBean;
 import com.mobileappeng.threegorgeous.projrutransit.RecycleView_RU_Transit.DataBean;
 import com.mobileappeng.threegorgeous.projrutransit.RecycleView_RU_Transit.GalleryAdapter;
 import com.mobileappeng.threegorgeous.projrutransit.RecycleView_RU_Transit.RecyclerAdapter;
+import com.mobileappeng.threegorgeous.projrutransit.api.NextBusAPI;
+import com.mobileappeng.threegorgeous.projrutransit.api.UpdateRoutesTask;
+import com.mobileappeng.threegorgeous.projrutransit.data.constants.AppData;
+import com.mobileappeng.threegorgeous.projrutransit.data.constants.RUTransitApp;
+import com.mobileappeng.threegorgeous.projrutransit.data.model.BusData;
+import com.mobileappeng.threegorgeous.projrutransit.data.model.BusRoute;
+import com.mobileappeng.threegorgeous.projrutransit.data.model.BusStop;
+import com.mobileappeng.threegorgeous.projrutransit.data.model.BusStopTime;
+import com.mobileappeng.threegorgeous.projrutransit.data.model.BusVehicle;
 import com.squareup.picasso.Picasso;
 //import com.mobileappeng.threegorgeous.projrutransit.gson.Weather;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class TodaySummaryActivity extends AppCompatActivity {
     private NavigationView navigation;
@@ -59,7 +73,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
     private List<String> mDatas;
     private List<String> titles;
     private List<String> wendu;
-    private List<Map<String, Object>> bus_data = new ArrayList<Map<String, Object>>();
+    private List<Map<String, Object>> favouriteBusData = new ArrayList<Map<String, Object>>();
     private MiuiWeatherView weatherView;
     private RecyclerView history_today;
     private String city = "Piscataway";
@@ -74,6 +88,8 @@ public class TodaySummaryActivity extends AppCompatActivity {
     private TextView fengsu_textview;
     private Button btn_click_plus_bus;
     private ScrollView scrollView;
+    private Timer timer;
+    private TimerTask timedRecentBusRefresher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +100,12 @@ public class TodaySummaryActivity extends AppCompatActivity {
         url_list[2]="";
         url_list[3]="";
         url_list[4]="";
+
+        favouriteBusData = new ArrayList<Map<String, Object>>();
+        new FindRecentBuses().execute();
+
+
+
 
         bus_timetable=(ListView) findViewById(R.id.bus_timetable);
         hourly_weather=(RecyclerView) findViewById(R.id.hourly_weather);
@@ -115,10 +137,9 @@ public class TodaySummaryActivity extends AppCompatActivity {
         weatherView.setData(data);
 
 
-
-
         bus_CursorAdapter=new SimpleAdapter(TodaySummaryActivity.this,
-                get_bus_data(),
+                /*loadFavouriteBusData(),*/
+                favouriteBusData,
                 R.layout.activity_today_summary_list_item,
                 new String[]{"bus_name","bus_time"},
                 new int[]{R.id.bus_name,R.id.bus_time}
@@ -158,8 +179,10 @@ public class TodaySummaryActivity extends AppCompatActivity {
 
                 editor.putInt("Number",count);
                 editor.commit();
-                get_bus_data();
-                bus_CursorAdapter.notifyDataSetChanged();
+              
+                loadFavouriteBusData();
+                bus_CursorAdapter.notifyDataSetChanged();*/
+
                 return false;
             }
         });
@@ -195,7 +218,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
         }
         drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
 
-        initWeather_Datas();
+        initWeatherData();
         hourly_weather_adapter=new GalleryAdapter(this,mDatas,titles,wendu);
         LinearLayoutManager ms= new LinearLayoutManager(this);
         ms.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -310,9 +333,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
 
     }
 
-
-
-    private void initWeather_Datas()
+    private void initWeatherData()
     {
         mDatas = new ArrayList<>(Arrays.asList(
                 url_list[0],
@@ -325,24 +346,22 @@ public class TodaySummaryActivity extends AppCompatActivity {
         wendu = new ArrayList<>(Arrays.asList("","","","",""));
     }
 
-
-
-    private List<Map<String, Object>> get_bus_data()
-    {   bus_data.clear();
+    private List<Map<String, Object>> loadFavouriteBusData()
+    {
         SharedPreferences share=getSharedPreferences("Favourite_Stop",Activity.MODE_PRIVATE);
-        int count=share.getInt("Number",0);
-        for (int i = 1; i <=count; i++) {
+        int count = share.getInt("Number",0);
+        for (int i = 1; i <= count; i++) {
+
             Map<String, Object> item = new HashMap<String, Object>();
 
-            String route=share.getString("Bus_Route"+i,"No_data");
-            String stop=share.getString("Bus_Stop"+i,"No_data");
+            String route = share.getString("Bus_Route" + i,"No_data");
+            String stop = share.getString("Bus_Stop" + i,"No_data");
 
             item.put("bus_name", route);
             item.put("bus_time", stop);
-            bus_data.add(item);
+            favouriteBusData.add(item);
     }
-        return bus_data;
-
+        return favouriteBusData;
     }
 
     private void initData(){
@@ -373,8 +392,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
             }
         });
     }
-
-
+    
     private void loadWeather(String city){
         WeatherMap weatherMap = new WeatherMap(this, "27314559f4adc16163087a6e7314f6e4");
         weatherMap.getCityWeather(city, new WeatherCallback() {
@@ -456,5 +474,115 @@ public class TodaySummaryActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onActivityResult (int requestCode, int resultCode, Intent data) {
+        new FindRecentBuses().execute();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        timer.cancel();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Setup auto refresh
+        timer = new Timer();
+        timedRecentBusRefresher = new TimerTask() {
+            @Override
+            public void run() {
+                new FindRecentBuses().execute();
+            }
+        };
+        timer.schedule(timedRecentBusRefresher, 10000, 10000);
+    }
+
+    private class FindRecentBuses extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            SharedPreferences sp = getSharedPreferences("Favourite_Stop",Activity.MODE_PRIVATE);
+            int count = sp.getInt("Number",0);
+            favouriteBusData = new ArrayList<Map<String, Object>>();
+            for (int i = 1; i <= count; i++) {
+                // Load from shared preference
+                Map<String, Object> item = new HashMap<String, Object>();
+                String routeTag = sp.getString(AppData.ROUTE_TAG + i,"");
+                String stopTag = sp.getString(AppData.STOP_TAG + i,"");
+                String routeName = sp.getString(AppData.ROUTE_NAME + i, "N/A");
+                String stopName = sp.getString(AppData.STOP_NAME + i, "N/A");
+                // Query for data and update to in-memory storage
+                item.put("bus_name", routeName + " @ " + stopName);
+                item.put("bus_time", findRecentBusesOfRouteAtStop(routeTag, stopTag));
+                favouriteBusData.add(item);
+            }
+            return "OK";
+        }
+
+        @Override
+        protected void onPostExecute(String resultText) {
+            if (resultText.equals("OK")) {
+                bus_CursorAdapter.notifyDataSetChanged();
+            }
+        }
+
+        private String findRecentBusesOfRouteAtStop (String route, String stop) {
+            // Init data
+            ArrayList<String> routeBusVehicleIds = new ArrayList<>();
+            ArrayList<BusStopTime> stopTimes = new ArrayList<>();
+            List<BusStop> allBusStops = new ArrayList<>();
+            ArrayList<Integer> targetTimes = new ArrayList<>();
+            // Get all bus ids in queried route
+            ArrayList<BusVehicle> routeBusVehicles =
+                    RUTransitApp.getBusData().getBusTagsToBusRoutes().get(route).getActiveBuses();
+            for (BusVehicle bus : routeBusVehicles) {
+                routeBusVehicleIds.add(bus.getVehicleId());
+            }
+            // Get all BusStopTime at queried bus stop
+            allBusStops = Arrays.asList(RUTransitApp.getBusData().getAllBusStops());
+            for (BusRoute findRoute : BusData.getActiveRoutes()) {
+                if (findRoute.getTag().equals(route)) {
+                    allBusStops = Arrays.asList(findRoute.getBusStops());
+                    NextBusAPI.saveBusStopTimes(findRoute);
+                }
+            }
+            if (allBusStops == null) {
+                return "";
+            } else {
+                for (BusStop checkStop : allBusStops) {
+                    if (checkStop.getTag().equals(stop)) {
+                        stopTimes = checkStop.getTimes();
+                        break;
+                    }
+                }
+            }
+            // Filter BusStopTime and find out time for needed route
+            if (stopTimes == null) {
+                return "";
+            } else {
+                for (BusStopTime stopTime : stopTimes) {
+                    if (routeBusVehicleIds.contains(stopTime.getVehicleId())) {
+                        targetTimes.add(stopTime.getMinutes());
+                    }
+                }
+            }
+            // toString
+            Collections.sort(targetTimes);
+            if (targetTimes.size() == 0) {
+                return "";
+            } else {
+                StringBuilder sb = new StringBuilder("in ");
+                for (int targetTime : targetTimes) {
+                    sb.append(targetTime).append(" / ");
+                }
+                sb.setLength(sb.length() - 3);
+                String result = sb.toString();
+                Log.d("Bus time", route + " @ " + stop + " : " + result);
+                return result;
+            }
+        }
     }
 }
