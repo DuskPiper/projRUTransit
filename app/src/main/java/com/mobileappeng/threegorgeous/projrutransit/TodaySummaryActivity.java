@@ -179,9 +179,6 @@ public class TodaySummaryActivity extends AppCompatActivity {
 
                 editor.putInt("Number",count);
                 editor.commit();
-              
-                loadFavouriteBusData();
-                bus_CursorAdapter.notifyDataSetChanged();*/
 
                 return false;
             }
