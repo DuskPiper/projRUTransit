@@ -40,6 +40,8 @@ import com.mobileappeng.threegorgeous.projrutransit.RecycleView_RU_Transit.DataB
 import com.mobileappeng.threegorgeous.projrutransit.RecycleView_RU_Transit.GalleryAdapter;
 import com.mobileappeng.threegorgeous.projrutransit.RecycleView_RU_Transit.RecyclerAdapter;
 import com.mobileappeng.threegorgeous.projrutransit.api.NextBusAPI;
+import com.mobileappeng.threegorgeous.projrutransit.api.UpdateRoutesTask;
+import com.mobileappeng.threegorgeous.projrutransit.data.constants.AppData;
 import com.mobileappeng.threegorgeous.projrutransit.data.constants.RUTransitApp;
 import com.mobileappeng.threegorgeous.projrutransit.data.model.BusData;
 import com.mobileappeng.threegorgeous.projrutransit.data.model.BusRoute;
@@ -56,6 +58,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class TodaySummaryActivity extends AppCompatActivity {
     private NavigationView navigation;
@@ -84,6 +88,8 @@ public class TodaySummaryActivity extends AppCompatActivity {
     private TextView fengsu_textview;
     private Button btn_click_plus_bus;
     private ScrollView scrollView;
+    private Timer timer;
+    private TimerTask timedRecentBusRefresher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +103,9 @@ public class TodaySummaryActivity extends AppCompatActivity {
 
         favouriteBusData = new ArrayList<Map<String, Object>>();
         new FindRecentBuses().execute();
+
+
+
 
         bus_timetable=(ListView) findViewById(R.id.bus_timetable);
         hourly_weather=(RecyclerView) findViewById(R.id.hourly_weather);
@@ -466,6 +475,26 @@ public class TodaySummaryActivity extends AppCompatActivity {
         new FindRecentBuses().execute();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        timer.cancel();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Setup auto refresh
+        timer = new Timer();
+        timedRecentBusRefresher = new TimerTask() {
+            @Override
+            public void run() {
+                new FindRecentBuses().execute();
+            }
+        };
+        timer.schedule(timedRecentBusRefresher, 10000, 10000);
+    }
+
     private class FindRecentBuses extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
@@ -475,11 +504,13 @@ public class TodaySummaryActivity extends AppCompatActivity {
             for (int i = 1; i <= count; i++) {
                 // Load from shared preference
                 Map<String, Object> item = new HashMap<String, Object>();
-                String route = sp.getString("Bus_Route" + i,"N/A");
-                String stop = sp.getString("Bus_Stop" + i,"N/A");
+                String routeTag = sp.getString(AppData.ROUTE_TAG + i,"");
+                String stopTag = sp.getString(AppData.STOP_TAG + i,"");
+                String routeName = sp.getString(AppData.ROUTE_NAME + i, "N/A");
+                String stopName = sp.getString(AppData.STOP_NAME + i, "N/A");
                 // Query for data and update to in-memory storage
-                item.put("bus_name", route + " @ " + stop);
-                item.put("bus_time", findRecentBusesOfRouteAtStop(route, stop));
+                item.put("bus_name", routeName + " @ " + stopName);
+                item.put("bus_time", findRecentBusesOfRouteAtStop(routeTag, stopTag));
                 favouriteBusData.add(item);
             }
             return "OK";
@@ -543,7 +574,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
                 }
                 sb.setLength(sb.length() - 3);
                 String result = sb.toString();
-                Log.d("Bus time", "Found result: " + result);
+                Log.d("Bus time", route + " @ " + stop + " : " + result);
                 return result;
             }
         }

@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.mobileappeng.threegorgeous.projrutransit.RecycleView_RU_Transit.FavouriteAdapter;
+import com.mobileappeng.threegorgeous.projrutransit.data.constants.AppData;
 import com.mobileappeng.threegorgeous.projrutransit.data.constants.RUTransitApp;
 import com.mobileappeng.threegorgeous.projrutransit.data.model.BusRoute;
 import com.mobileappeng.threegorgeous.projrutransit.data.model.BusStop;
@@ -33,8 +34,10 @@ public class FavouriteActivity extends AppCompatActivity {
     private List<String> busStopTagList;
     private List<String> busStopNameList;
     private OnRecyclerviewItemClickListener onRecyclerviewItemClickListener;
-    private String busRouteChoice;
-    private String busStopChoice;
+    private String busRouteTagChoice = "";
+    private String busRouteNameChoice = "";
+    private String busStopTagChoice = "";
+    private String busStopNameChoice = "";
     private int click_time;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,17 +57,21 @@ public class FavouriteActivity extends AppCompatActivity {
                 click_time+=1;
                 if(click_time==1)
                 {
-                    busRouteChoice=busRouteTagList.get(position);
+                    busRouteTagChoice = busRouteTagList.get(position);
+                    busRouteNameChoice = busRouteNameList.get(position);
                 }
                 if(click_time==2)
                 {
-                    busStopChoice=busStopTagList.get(position);
+                    busStopTagChoice = busStopTagList.get(position);
+                    busStopNameChoice = busStopNameList.get(position);
                     SharedPreferences sharedPreferences = getSharedPreferences("Favourite_Stop", Context.MODE_PRIVATE); //私有数据
                     int count=sharedPreferences.getInt("Number",0);
                     count+=1;
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("Bus_Route" + count, busRouteChoice);
-                    editor.putString("Bus_Stop" + count, busStopChoice);
+                    editor.putString(AppData.ROUTE_TAG + count, busRouteTagChoice);
+                    editor.putString(AppData.STOP_TAG + count, busStopTagChoice);
+                    editor.putString(AppData.ROUTE_NAME + count, busRouteNameChoice);
+                    editor.putString(AppData.STOP_NAME + count, busStopNameChoice);
                     editor.putInt("Number",count);
                     editor.commit();
 
