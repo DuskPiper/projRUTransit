@@ -149,7 +149,6 @@ public class TodaySummaryActivity extends AppCompatActivity {
         bus_timetable.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("Bus_timetale", "Long Click");
                 SharedPreferences share=getSharedPreferences("Favourite_Stop",Activity.MODE_PRIVATE);
                 int count=share.getInt("Number",0);
                 for (int i = position+1; i <=count; i++) {
