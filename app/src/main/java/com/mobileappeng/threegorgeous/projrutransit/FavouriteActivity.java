@@ -54,14 +54,12 @@ public class FavouriteActivity extends AppCompatActivity {
             @Override
             public void onItemClickListener(View v, int position) {
 
-                click_time+=1;
-                if(click_time==1)
-                {
+                click_time += 1;
+                if(click_time == 1) {
                     busRouteTagChoice = busRouteTagList.get(position);
                     busRouteNameChoice = busRouteNameList.get(position);
-                }
-                if(click_time==2)
-                {
+                    initBusStops(position);
+                } else if(click_time == 2) {
                     busStopTagChoice = busStopTagList.get(position);
                     busStopNameChoice = busStopNameList.get(position);
                     SharedPreferences sharedPreferences = getSharedPreferences("Favourite_Stop", Context.MODE_PRIVATE); //私有数据
@@ -78,8 +76,11 @@ public class FavouriteActivity extends AppCompatActivity {
                     // startActivity(new Intent(FavouriteActivity.this, TodaySummaryActivity.class));
                     FavouriteActivity.this.setResult(RESULT_OK);
                     FavouriteActivity.this.finish();
+                } else {
+                    FavouriteActivity.this.setResult(RESULT_CANCELED);
+                    FavouriteActivity.this.finish();
                 }
-                initBusStops(position);
+
                 //Toast.makeText(getContext()," 点击了 "+position,Toast.LENGTH_SHORT).show();
                 favourite_route_recycleview.setVisibility(RecyclerView.INVISIBLE);
                 favourite_bus_stop_recycleview.setVisibility(RecyclerView.VISIBLE);
