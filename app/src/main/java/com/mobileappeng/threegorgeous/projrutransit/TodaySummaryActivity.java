@@ -104,9 +104,6 @@ public class TodaySummaryActivity extends AppCompatActivity {
         favouriteBusData = new ArrayList<Map<String, Object>>();
         new FindRecentBuses().execute();
 
-
-
-
         bus_timetable=(ListView) findViewById(R.id.bus_timetable);
         hourly_weather=(RecyclerView) findViewById(R.id.hourly_weather);
         scrollView=(ScrollView)findViewById(R.id.scrollView);
@@ -344,14 +341,17 @@ public class TodaySummaryActivity extends AppCompatActivity {
 
     private List<Map<String, Object>> loadFavouriteBusData()
     {
+        if (favouriteBusData != null) {
+            favouriteBusData.clear();
+        }
         SharedPreferences share=getSharedPreferences("Favourite_Stop",Activity.MODE_PRIVATE);
         int count = share.getInt("Number",0);
         for (int i = 1; i <= count; i++) {
 
             Map<String, Object> item = new HashMap<String, Object>();
 
-            String route = share.getString("Bus_Route" + i,"No_data");
-            String stop = share.getString("Bus_Stop" + i,"No_data");
+            String route = share.getString(AppData.ROUTE_TAG + i,"No_data");
+            String stop = share.getString(AppData.STOP_TAG + i,"No_data");
 
             item.put("bus_name", route);
             item.put("bus_time", stop);
@@ -475,6 +475,14 @@ public class TodaySummaryActivity extends AppCompatActivity {
     @Override
     public void onActivityResult (int requestCode, int resultCode, Intent data) {
         new FindRecentBuses().execute();
+        if (resultCode == RESULT_OK) {
+            // loadFavouriteBusData();
+            // bus_CursorAdapter.notifyDataSetChanged();
+
+
+
+
+        }
     }
 
     @Override
@@ -520,8 +528,19 @@ public class TodaySummaryActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String resultText) {
+            bus_CursorAdapter=new SimpleAdapter(TodaySummaryActivity.this,
+                    /*loadFavouriteBusData(),*/
+                    favouriteBusData,
+                    R.layout.activity_today_summary_list_item,
+                    new String[]{"bus_name","bus_time"},
+                    new int[]{R.id.bus_name,R.id.bus_time}
+            );
+            bus_timetable.setAdapter(bus_CursorAdapter);
+
+
+
             if (resultText.equals("OK")) {
-                bus_CursorAdapter.notifyDataSetChanged();
+                // bus_CursorAdapter.notifyDataSetChanged();
             }
         }
 

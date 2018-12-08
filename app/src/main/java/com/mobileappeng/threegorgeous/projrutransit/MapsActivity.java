@@ -47,6 +47,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.Timer;
@@ -103,7 +104,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         activeBusMarkers = new ArrayList<>();
         busStopMarkers = new ArrayList<>();
         showRoute = "b";
-        refreshActiveRouteTags();
+        // refreshActiveRouteTags();
 
         // Setup auto refresh
         timer = new Timer();
@@ -124,6 +125,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Debug check
         if (DEBUG_CLEAR_SHARED_PREFERENCE) {
+            DEBUG_CLEAR_SHARED_PREFERENCE = false;
             getSharedPreferences("Favourite_Stop", Context.MODE_PRIVATE).edit().clear().commit();
         }
 
@@ -350,7 +352,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void refreshActiveRouteTags() {
-        Set<String> activeRouteTagSet = RUTransitApp.getBusData().getBusTagsToBusRoutes().keySet();
+        HashMap<String, BusRoute> tagsToRoutes = RUTransitApp.getBusData().getBusTagsToBusRoutes();
+        if (tagsToRoutes == null) {
+            return;
+            // tagsToRoutes = new HashMap<String, BusRoute>();
+        }
+        Set<String> activeRouteTagSet = tagsToRoutes.keySet();
         activeRouteTags = new ArrayList<String>();
         activeRouteTags.addAll(activeRouteTagSet);
         Collections.sort(activeRouteTags);
@@ -399,7 +406,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void refreshShownRoute() {
-        route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get(showRoute);
+        HashMap<String, BusRoute> tagsToRoutes = RUTransitApp.getBusData().getBusTagsToBusRoutes();
+        if (tagsToRoutes == null) {
+            return;
+        }
+        route = tagsToRoutes.get(showRoute);
         drawRoute();
     }
 
@@ -474,7 +485,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onResume();
         refreshNavigationRoutes();
         if (timer != null) {
-            timer.schedule(timedRouteRefresher, 3000, 5000);
+            timer.schedule(timedRouteRefresher, 1000, 5000);
         }
     }
 }
