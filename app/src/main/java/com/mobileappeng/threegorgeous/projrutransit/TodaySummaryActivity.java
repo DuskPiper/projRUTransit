@@ -341,11 +341,19 @@ public class TodaySummaryActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
-    private void initWeatherData()
-    {
+    ////////////////////////// START NOTIFY SERVICE HERE //////////////////////////////
+    private void startNotifyService(String routeName, String routeTag, String stopName, String stopTag) {
+        Intent serviceIntent = new Intent();
+        serviceIntent.putExtra(AppData.ROUTE_NAME, routeName);
+        serviceIntent.putExtra(AppData.ROUTE_TAG, routeTag);
+        serviceIntent.putExtra(AppData.STOP_NAME, stopName);
+        serviceIntent.putExtra(AppData.STOP_TAG, stopTag);
+        startService(serviceIntent);
+    }
+
+    private void initWeatherData() {
         mDatas = new ArrayList<>(Arrays.asList(
                 url_list[0],
         url_list[1],
@@ -357,8 +365,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
         wendu = new ArrayList<>(Arrays.asList("","","","",""));
     }
 
-    private List<Map<String, Object>> loadFavouriteBusData()
-    {
+    private List<Map<String, Object>> loadFavouriteBusData() {
         if (favouriteBusData != null) {
             favouriteBusData.clear();
         }
@@ -518,14 +525,10 @@ public class TodaySummaryActivity extends AppCompatActivity {
     @Override
     public void onActivityResult (int requestCode, int resultCode, Intent data) {
         new FindRecentBuses().execute();
-        if (resultCode == RESULT_OK) {
-            // loadFavouriteBusData();
-            // bus_CursorAdapter.notifyDataSetChanged();
-
-
-
-
-        }
+        /*if (resultCode == RESULT_OK) {
+            loadFavouriteBusData();
+            bus_CursorAdapter.notifyDataSetChanged();
+        }*/
     }
 
     @Override
