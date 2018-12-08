@@ -10,11 +10,17 @@ import github.vatsal.easyweather.retrofit.models.Weather;
 import github.vatsal.easyweather.retrofit.models.WeatherResponseModel;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.VibrationEffect;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -60,6 +66,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import android.os.Vibrator;
 
 public class TodaySummaryActivity extends AppCompatActivity {
     private NavigationView navigation;
@@ -90,6 +97,13 @@ public class TodaySummaryActivity extends AppCompatActivity {
     private ScrollView scrollView;
     private Timer timer;
     private TimerTask timedRecentBusRefresher;
+
+    NotificationManager notificationManager;
+    Notification notification = null;
+    NotificationManager nm ;
+    //用这个变量来唯一的标定一个Notification对象
+    final static int NOTIFY = 0x123;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,9 +114,11 @@ public class TodaySummaryActivity extends AppCompatActivity {
         url_list[2]="";
         url_list[3]="";
         url_list[4]="";
-
+        nm=(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         favouriteBusData = new ArrayList<Map<String, Object>>();
         new FindRecentBuses().execute();
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
+
 
         bus_timetable=(ListView) findViewById(R.id.bus_timetable);
         hourly_weather=(RecyclerView) findViewById(R.id.hourly_weather);
@@ -225,10 +241,12 @@ public class TodaySummaryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
 
+               // sendNotification();
                 startActivityForResult(new Intent(TodaySummaryActivity.this, FavouriteActivity.class),1);
                 //Toast.makeText(TodaySummaryActivity.this,"Button点击事件1",Toast.LENGTH_LONG).show();
             }
         });
+
 
 
 
@@ -420,6 +438,8 @@ public class TodaySummaryActivity extends AppCompatActivity {
             }
         });
 
+
+
         weatherMap.getCityForecast(city, new ForecastCallback() {
             @Override
             public void success(ForecastResponseModel response) {
@@ -471,7 +491,30 @@ public class TodaySummaryActivity extends AppCompatActivity {
             }
         });
     }
+    private void sendNotification() {
+        /*long[] pattern = {0, 100, 1000};
+        NotificationManager notifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("最简单的Notification")
+                .setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_LIGHTS)
+                .setContentText("只有小图标、标题、内容")
+                .setWhen(System.currentTimeMillis())
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setVibrate(pattern);
+*/
+        NotificationChannel mChannel = new NotificationChannel("channel_001", "name", NotificationManager.IMPORTANCE_LOW);
+        notificationManager.createNotificationChannel(mChannel);
+        notification = new Notification.Builder(getApplicationContext())
+                .setChannelId("channel_001")
+                .setContentTitle("活动")
+                .setContentText("您有一项新活动")
+                .setSmallIcon(R.drawable.bigrain).build();
+        notificationManager.notify(1, notification);
 
+        //通过builder.build()方法生成Notification对象,并发送通知,id=1
+       // notifyManager.notify(1, builder.build());
+    }
     @Override
     public void onActivityResult (int requestCode, int resultCode, Intent data) {
         new FindRecentBuses().execute();

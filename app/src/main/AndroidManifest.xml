@@ -10,6 +10,8 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:name="com.mobileappeng.threegorgeous.projrutransit.data.constants.RUTransitApp"
@@ -32,7 +34,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
+        <service android:name=".BusArrivalNotify"/>
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps">
@@ -45,6 +47,7 @@
         <activity android:name=".SettingsActivity" />
         <activity android:name=".TodaySummaryActivity"/>
         <activity android:name=".FavouriteActivity">
+
         </activity>
     </application>
 
