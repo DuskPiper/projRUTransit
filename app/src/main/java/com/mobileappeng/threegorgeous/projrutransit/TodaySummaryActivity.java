@@ -99,7 +99,6 @@ public class TodaySummaryActivity extends AppCompatActivity {
     private Button btn_click_plus_bus;
     private ScrollView scrollView;
     private Timer timer;
-    private TimerTask timedRecentBusRefresher;
 
 
     @Override
@@ -238,12 +237,9 @@ public class TodaySummaryActivity extends AppCompatActivity {
             public void onClick(View v){
 
                 startActivityForResult(new Intent(TodaySummaryActivity.this, FavouriteActivity.class),1);
-                //Toast.makeText(TodaySummaryActivity.this,"Button点击事件1",Toast.LENGTH_LONG).show();
+                // startNotifyService("WKND1", "wknd1", "SCOTT", "scott");
             }
         });
-
-
-
 
         navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -338,7 +334,6 @@ public class TodaySummaryActivity extends AppCompatActivity {
         });
     }
 
-    ////////////////////////// START NOTIFY SERVICE HERE //////////////////////////////
     private void startNotifyService(String routeName, String routeTag, String stopName, String stopTag) {
         Intent serviceIntent = new Intent(this,BusArrivalNotify.class);
         serviceIntent.putExtra(AppData.ROUTE_NAME, routeName);
@@ -538,7 +533,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
         super.onResume();
         // Setup auto refresh
         timer = new Timer();
-        timedRecentBusRefresher = new TimerTask() {
+        TimerTask timedRecentBusRefresher = new TimerTask() {
             @Override
             public void run() {
                 new FindRecentBuses().execute();
@@ -578,9 +573,6 @@ public class TodaySummaryActivity extends AppCompatActivity {
                     new int[]{R.id.bus_name,R.id.bus_time}
             );
             bus_timetable.setAdapter(bus_CursorAdapter);
-
-
-
             if (resultText.equals("OK")) {
                 // bus_CursorAdapter.notifyDataSetChanged();
             }

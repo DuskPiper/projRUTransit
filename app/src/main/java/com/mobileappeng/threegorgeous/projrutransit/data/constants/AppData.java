@@ -19,4 +19,8 @@ public class AppData {
     public static final String ROUTE_NAME = "bus_route_name";
     public static final String STOP_TAG = "bus_stop_tag";
     public static final String STOP_NAME = "bus_stop_name";
+
+    // Favourite Buses ListView Adapter
+    public static final String BUS_INFO_DESCRIPTION = "route_and_stop_info_description";
+    public static final String BUS_INFO_APPROACHING_TIME = "route_and_stop_info_approaching_time";
 }

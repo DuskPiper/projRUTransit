@@ -62,22 +62,6 @@ public class RUTransitApp extends Application {
         return busData;
     }
 
-
-/*
-    public static synchronized Tracker getTracker() {
-        if (mTracker == null) {
-            GoogleAnalytics analytics = GoogleAnalytics.getInstance(getContext());
-            GoogleAnalytics.getInstance(getContext()).setLocalDispatchPeriod(120);
-            if (!BuildConfig.DEBUG) {
-                mTracker = analytics.newTracker(getContext().getString(R.string.release_tracker_id));
-            } else {
-                mTracker = analytics.newTracker(getContext().getString(R.string.debug_tracker_id));
-            }
-        }
-        return mTracker;
-    }
-*/
-
     @Override
     public void onTerminate() {
         super.onTerminate();
