@@ -19,8 +19,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Environment;
 import android.os.VibrationEffect;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -31,7 +33,10 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -61,12 +66,18 @@ import com.mobileappeng.threegorgeous.projrutransit.data.model.BusVehicle;
 import com.squareup.picasso.Picasso;
 //import com.mobileappeng.threegorgeous.projrutransit.gson.Weather;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -240,7 +251,6 @@ public class TodaySummaryActivity extends AppCompatActivity {
                 // startNotifyService("WKND1", "wknd1", "SCOTT", "scott");
             }
         });
-
         navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -264,7 +274,12 @@ public class TodaySummaryActivity extends AppCompatActivity {
                     case R.id.navigation_settings:
                         // Go to activity: settings
                         Log.d("Navigation", "Seleted Settings");
-                        startActivity(new Intent(TodaySummaryActivity.this, TodaySummaryActivity.class));
+                        startActivity(new Intent(TodaySummaryActivity.this, SettingsActivity.class));
+                        return true;
+                    case R.id.custom_BG:
+                        // Go to activity: settings
+                        Log.d("Navigation", "Seleted Settings");
+                        startActivity(new Intent(TodaySummaryActivity.this, SettingsActivity.class));
                         return true;
                     case R.id.navigation_1:
                         startActivity(new Intent(TodaySummaryActivity.this, MapsActivity.class));
@@ -386,7 +401,25 @@ public class TodaySummaryActivity extends AppCompatActivity {
             }
         });
     }
-    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_maps_drawer, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()) {
+            case R.id.custom_BG://监听菜单按钮
+                startActivity(new Intent(TodaySummaryActivity.this, SettingsActivity.class));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
+
     private void loadWeather(String city){
         WeatherMap weatherMap = new WeatherMap(this, "27314559f4adc16163087a6e7314f6e4");
         weatherMap.getCityWeather(city, new WeatherCallback() {

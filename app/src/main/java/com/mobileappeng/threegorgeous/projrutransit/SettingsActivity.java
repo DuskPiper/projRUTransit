@@ -3,15 +3,22 @@ package com.mobileappeng.threegorgeous.projrutransit;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.icu.util.Calendar;
 import android.os.AsyncTask;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -28,14 +35,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import github.vatsal.easyweather.retrofit.models.Sys;
 
 public class SettingsActivity extends AppCompatActivity {
     private final String TAG = "Manage Favourite";
@@ -96,27 +110,11 @@ public class SettingsActivity extends AppCompatActivity {
                     case R.id.navigation_today:
                         // Go to activity: Today
                         Log.d("Navigation", "Seleted Today");
-                        startActivity(new Intent(SettingsActivity.this, SettingsActivity.class));
+                        startActivity(new Intent(SettingsActivity.this, TodaySummaryActivity.class));
                         return true;
                     case R.id.navigation_settings:
                         // Do nothing, stay in current activity
                         Log.d("Navigation", "Seleted Settings");
-
-
-                        JSONObject dataJson= null;
-                        try {
-                            dataJson = new JSONObject("你的Json数据");
-                            JSONObject response=dataJson.getJSONObject("response");
-                            JSONArray data=response.getJSONArray("data");
-                            JSONObject info=data.getJSONObject(0);
-                            String province=info.getString("province");
-                            String city=info.getString("city");
-                            String district=info.getString("district");
-                            String address=info.getString("address");
-                            System.out.println(province+city+district+address);}
-                            catch (JSONException e) {
-                            e.printStackTrace();
-                        }
 
                         return true;
                     case R.id.navigation_1:
@@ -185,6 +183,70 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()) {
+            case R.id.custom_BG://监听菜单按钮
+                System.out.println("You have click it!");
+                startActivityForResult(new  Intent(MediaStore.ACTION_IMAGE_CAPTURE),1);
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(intent, 0001);
+
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // 如果返回值是正常的话
+        if (resultCode == Activity.RESULT_OK) {
+            // 验证请求码是否一至，也就是startActivityForResult的第二个参数
+            switch (requestCode) {
+                case 1:
+                    saveCameraImage(data);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void saveCameraImage(Intent data) {
+        // 检查sd card是否存在
+        if (!Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            Log.i(TAG, "sd card is not avaiable/writeable right now.");
+            return;
+        }
+        // 为图片命名啊
+        String name = "Test" + ".jpg";
+        Bitmap bmp = (Bitmap) data.getExtras().get("data");// 解析返回的图片成bitmap
+
+        // 保存文件
+        FileOutputStream fos = null;
+        File file = new File("/mnt/sdcard/test/");
+        file.mkdirs();// 创建文件夹
+        String fileName = "/mnt/sdcard/test/" + name;// 保存路径
+
+        try {// 写入SD card
+            fos = new FileOutputStream(fileName);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.flush();
+                fos.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }// 显示图片
     }
 
     private class RefreshApproachingBuses extends AsyncTask<String, Void, String> {
@@ -281,6 +343,13 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_maps_drawer, menu);
+        return true;
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         timer.cancel();
@@ -299,4 +368,8 @@ public class SettingsActivity extends AppCompatActivity {
         };
         timer.schedule(timedRecentBusRefresher, 0, 10000);
     }
+
+
+
+
 }
