@@ -10,8 +10,18 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+
+    <uses-feature android:name="android.hardware.camera" />
+
+    <uses-feature android:name="android.hardware.autofocus"/>
 
     <application
+
         android:name="com.mobileappeng.threegorgeous.projrutransit.data.constants.RUTransitApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -32,7 +42,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
+        <service android:name=".BusArrivalNotify"/>
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps">
@@ -45,7 +55,9 @@
         <activity android:name=".SettingsActivity" />
         <activity android:name=".TodaySummaryActivity"/>
         <activity android:name=".FavouriteActivity">
+
         </activity>
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
     </application>
 
 </manifest>

@@ -180,14 +180,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/next_days_textview" />
 
-            <com.example.ccy.miuiweatherline.MiuiWeatherView
-                android:id="@+id/Miui_weather_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:line_interval="60dp"
-            app:min_point_height="60dp"
-            app:background_color="#ffffff"
-                app:layout_constraintTop_toBottomOf="@+id/hourly_weather"/>
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/history_today"
                 android:layout_width="0dp"
@@ -196,7 +188,7 @@
                 android:scrollbars="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Miui_weather_view"
+                app:layout_constraintTop_toBottomOf="@+id/hourly_weather"
                 />
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

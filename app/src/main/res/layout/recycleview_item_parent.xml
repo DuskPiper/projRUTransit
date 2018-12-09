@@ -28,14 +28,6 @@
             android:gravity="center"
             android:textSize="20sp"/>
 
-        <TextView
-            android:id="@+id/parent_right_text"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:hint="year"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:textSize="20sp"/>
     </LinearLayout>
 
     <View
