@@ -17,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -160,7 +161,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
                         {
                             moveCamera(40.498, -74.445, 13); // all campuses
-                            showRoute = "wknd2";
+                            showRoute = "wknd1";
                         } else {
                             moveCamera(40.5246, -74.4528, 14); // Busch + Liv
                             showRoute = "b";
@@ -314,7 +315,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng rutgersGate = new LatLng(40.498570, -74.445148);
         LatLng coreBuilding = new LatLng(40.5203528, -74.4604897);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(rutgersGate, 13.5f));
-
+//        mMap.setMyLocationEnabled(true);
         refreshActiveRouteTags();
         refreshShownRoute();
     }
@@ -372,6 +373,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void refreshNavigationRoutes() {
         if (navigation != null) {
+            navigation.getMenu().findItem(R.id.custom_BG).setTitle("").setCheckable(false).setChecked(false);
             if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
             {
                 moveCamera(40.498, -74.445, 13); // all campuses

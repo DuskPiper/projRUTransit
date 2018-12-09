@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:http="http://schemas.android.com/tools">
 
     <!-- Actual Page Content -->
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -13,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".SettingsActivity">
+
 
         <ListView
             android:id="@+id/manage_favourite_listview"
@@ -36,6 +38,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/manage_favourite_listview" />
 >>>>>>> master
     </android.support.constraint.ConstraintLayout>
+
+
 
     <!-- Drawer -->
     <android.support.design.widget.NavigationView
