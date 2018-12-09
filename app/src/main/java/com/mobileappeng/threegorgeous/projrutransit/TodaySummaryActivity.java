@@ -338,7 +338,11 @@ public class TodaySummaryActivity extends AppCompatActivity {
 
     ////////////////////////// START NOTIFY SERVICE HERE //////////////////////////////
     private void startNotifyService(String routeName, String routeTag, String stopName, String stopTag) {
+<<<<<<< HEAD
         Intent serviceIntent = new Intent(this,BusArrivalNotify.class);
+=======
+        Intent serviceIntent = new Intent();
+>>>>>>> master
         serviceIntent.putExtra(AppData.ROUTE_NAME, routeName);
         serviceIntent.putExtra(AppData.ROUTE_TAG, routeTag);
         serviceIntent.putExtra(AppData.STOP_NAME, stopName);

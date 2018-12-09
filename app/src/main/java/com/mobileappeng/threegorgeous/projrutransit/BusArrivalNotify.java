@@ -1,5 +1,6 @@
 package com.mobileappeng.threegorgeous.projrutransit;
 
+<<<<<<< HEAD
 import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -18,6 +19,12 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
+=======
+import android.app.Service;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.IBinder;
+>>>>>>> master
 import android.util.Log;
 import android.widget.Toast;
 
@@ -37,8 +44,11 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+<<<<<<< HEAD
 import static android.app.Notification.DEFAULT_ALL;
 
+=======
+>>>>>>> master
 public class BusArrivalNotify extends Service {
     public static final String TAG = "Bus Arrival Service";
     private String routeTag;
@@ -50,6 +60,7 @@ public class BusArrivalNotify extends Service {
     private TimerTask timedRecentBusRefresher;
     private TimerTask timedNotifier;
     private int failedTrials = 0;
+<<<<<<< HEAD
     private NotificationChannel b;
 
     private NotificationManager mNotificationManager;
@@ -59,6 +70,11 @@ public class BusArrivalNotify extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
+=======
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+>>>>>>> master
         // Load Intent data
         routeName = intent.getStringExtra(AppData.ROUTE_NAME);
         routeTag = intent.getStringExtra(AppData.ROUTE_TAG);
@@ -92,9 +108,13 @@ public class BusArrivalNotify extends Service {
         timer.schedule(timedNotifier, 0, 2000);
         timer.schedule(timedRecentBusRefresher, 0, 10000);
 
+<<<<<<< HEAD
 
         return super.onStartCommand(intent, flags, startId);
 
+=======
+        return super.onStartCommand(intent, flags, startId);
+>>>>>>> master
     }
 
     @Override
@@ -111,6 +131,7 @@ public class BusArrivalNotify extends Service {
 
     private void sendNotification() {
         // Notify
+<<<<<<< HEAD
        /* Toast.makeText(
                 getApplicationContext(),
                 "Bus " + routeName + " approaching " + stopName,
@@ -139,6 +160,12 @@ public class BusArrivalNotify extends Service {
         flshLight();
         mNotificationManager.notify(1, notification);
         flshLight();
+=======
+        Toast.makeText(
+                getApplicationContext(),
+                "Bus " + routeName + " approaching " + stopName,
+                Toast.LENGTH_LONG).show();
+>>>>>>> master
         ////////////////////////// NOTIFY HERE //////////////////////////////
     }
 
@@ -209,6 +236,7 @@ public class BusArrivalNotify extends Service {
         }
     }
 
+<<<<<<< HEAD
     private void flshLight() {
         try {
 
@@ -218,4 +246,6 @@ public class BusArrivalNotify extends Service {
         } catch (Exception e) {}
      }
 
+=======
+>>>>>>> master
 }
