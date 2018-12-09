@@ -208,7 +208,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()) {
-            case R.id.custom_BG://监听菜单按钮
+            case R.id.custom_bg://监听菜单按钮
                 System.out.println("You have click it!");
                 startActivityForResult(new  Intent(MediaStore.ACTION_IMAGE_CAPTURE),1);
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);

@@ -11,7 +11,7 @@
             android:id="@+id/navigation_today"
             android:title="Today"/>
         <item
-            android:id="@+id/custom_BG"
+            android:id="@+id/custom_bg"
             android:title="Custom BG"
             android:orderInCategory="100"
             app:showAsAction="always" />
