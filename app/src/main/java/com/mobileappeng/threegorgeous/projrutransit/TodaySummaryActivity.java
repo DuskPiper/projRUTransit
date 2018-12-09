@@ -8,6 +8,7 @@ import github.vatsal.easyweather.WeatherMap;
 import github.vatsal.easyweather.retrofit.models.ForecastResponseModel;
 import github.vatsal.easyweather.retrofit.models.Weather;
 import github.vatsal.easyweather.retrofit.models.WeatherResponseModel;
+import retrofit2.http.HEAD;
 
 import android.Manifest;
 import android.app.Activity;
@@ -234,6 +235,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
         btn_click_plus_bus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
+
                 startActivityForResult(new Intent(TodaySummaryActivity.this, FavouriteActivity.class),1);
                 // startNotifyService("WKND1", "wknd1", "SCOTT", "scott");
             }
@@ -373,7 +375,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
         return favouriteBusData;
     }
 
-    private void setJokeDate(){
+    private void setJokeData(){
         history_today.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new RecyclerAdapter(this,dataBeanList);
         history_today.setAdapter(mAdapter);
@@ -508,7 +510,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
             dataBean.setChildBean(dataBean);
             dataBeanList.add(dataBean);
         }
-        setJokeDate();
+        setJokeData();
     }
 
     @Override

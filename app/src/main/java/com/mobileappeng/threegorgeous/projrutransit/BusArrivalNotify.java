@@ -16,9 +16,14 @@ import android.hardware.camera2.CameraManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
+
+import android.app.Service;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.IBinder;
+
 import android.util.Log;
 import android.widget.Toast;
 
@@ -37,6 +42,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import retrofit2.http.HEAD;
 
 import static android.app.Notification.DEFAULT_ALL;
 
@@ -58,8 +65,7 @@ public class BusArrivalNotify extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-
+            mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         // Load Intent data
         routeName = intent.getStringExtra(AppData.ROUTE_NAME);
         routeTag = intent.getStringExtra(AppData.ROUTE_TAG);
@@ -83,7 +89,6 @@ public class BusArrivalNotify extends Service {
             public void run() {
                 if (closestTime < 2) {
                     // Bus Approaching!
-                    Looper.prepare();
                     Log.i(TAG, "Bus " + routeName + " is approaching at " + stopName);
                     sendNotification();
                     stopSelf();
@@ -93,7 +98,6 @@ public class BusArrivalNotify extends Service {
         // Run Loopers
         timer.schedule(timedNotifier, 0, 2000);
         timer.schedule(timedRecentBusRefresher, 0, 10000);
-
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -111,8 +115,6 @@ public class BusArrivalNotify extends Service {
     }
 
     private void sendNotification() {
-        // Notify
-
         flshLight();
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         long[] pattern = {300, 100, 200, 500, 300, 100}; // OFF/ON/OFF/ON
@@ -121,24 +123,25 @@ public class BusArrivalNotify extends Service {
             b = new NotificationChannel("Notify","Bus Notify",NotificationManager.IMPORTANCE_HIGH);
             mNotificationManager.createNotificationChannel(b);
         }
-        flshLight();
+        Intent notificationIntent = new Intent(this, MapsActivity.class);
+        PendingIntent contentItent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         Notification notification = new NotificationCompat.Builder(getApplicationContext())
                 .setContentText(" Approaching " + stopName)
                 .setContentTitle("Bus " + routeName)
                 .setSmallIcon(R.drawable.ic_launcher_background)//Renew LOGO
                 .setWhen(System.currentTimeMillis())
-                .setOngoing(true)
                 .setDefaults(DEFAULT_ALL)
                 .setChannelId("Notify")
+                .setContentIntent(contentItent)
                 .build();
+
+        for(int i=0;i<10;i++){
         flshLight();
+        }
         mNotificationManager.notify(1, notification);
         flshLight();
-        Toast.makeText(
-                getApplicationContext(),
-                "Bus " + routeName + " approaching " + stopName,
-                Toast.LENGTH_LONG).show();
+
     }
 
     private class FindRecentBuses extends AsyncTask<String, Void, Integer> {
@@ -150,10 +153,8 @@ public class BusArrivalNotify extends Service {
         @Override
         protected void onPostExecute(Integer time) {
             closestTime = time;
-            Log.d(TAG, "Closest time = " + Integer.toString(time) + " minutes");
             if (time > 9999) {
                 failedTrials ++;
-                Log.d(TAG, "Trial failed once");
                 if (failedTrials > 5) { // After 5 failed attempts
                     Log.e(TAG, "Bus data not available, auto stopped");
                     stopSelf();
@@ -209,6 +210,7 @@ public class BusArrivalNotify extends Service {
             }
         }
     }
+
 
     private void flshLight() {
         try {
