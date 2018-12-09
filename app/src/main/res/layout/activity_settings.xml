@@ -14,6 +14,20 @@
         android:layout_height="match_parent"
         tools:context=".SettingsActivity">
 
+        <ListView
+            android:id="@+id/manage_favourite_listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
+        </ListView>
+
+        <Button
+            android:id="@+id/manage_favourite_add_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="ADD FAVOURITE"
+            app:layout_constraintBottom_toBottomOf="@+id/manage_favourite_listview" />
     </android.support.constraint.ConstraintLayout>
 
     <!-- Drawer -->
