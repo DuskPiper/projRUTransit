@@ -10,10 +10,20 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.MenuItem;
+<<<<<<< HEAD
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
+=======
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+>>>>>>> master
 
 import com.mobileappeng.threegorgeous.projrutransit.api.NextBusAPI;
 import com.mobileappeng.threegorgeous.projrutransit.data.constants.AppData;
@@ -43,8 +53,12 @@ public class SettingsActivity extends AppCompatActivity {
     private DrawerLayout drawer;
     private ListView favouriteListView;
     private Button addFavouriteButton;
+<<<<<<< HEAD
+    private List<Map<String, String>> favouriteBusData = new ArrayList<Map<String, String>>();
+=======
     private List<Map<String, Object>> favouriteBusData = new ArrayList<Map<String, Object>>();
     // private SimpleAdapter favouriteListViewAdapter;
+>>>>>>> master
     private Timer timer;
 
 
@@ -76,7 +90,28 @@ public class SettingsActivity extends AppCompatActivity {
         };
         timer.schedule(timedRecentBusRefresher, 0, 10000);
 
+<<<<<<< HEAD
+        // Initialize Long-press Options
+        favouriteListView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                menu.setHeaderTitle("Options");
+                menu.add(0, 0, 0, "Notify upon arrival");
+                menu.add(0, 0, 1, "Delete");
+            }
+        });
+
         // Set Listeners
+        addFavouriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(SettingsActivity.this, FavouriteActivity.class), AppData.REQUEST_ADD_NEW_FAVOURITE);
+            }
+        });
+
+=======
+        // Set Listeners
+>>>>>>> master
         navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -193,10 +228,17 @@ public class SettingsActivity extends AppCompatActivity {
             Log.d(TAG, "Update data started");
             SharedPreferences sp = getSharedPreferences("Favourite_Stop", Activity.MODE_PRIVATE);
             int count = sp.getInt("Number",0);
+<<<<<<< HEAD
+            favouriteBusData = new ArrayList<Map<String, String>>();
+            for (int i = 1; i <= count; i++) {
+                // Load from shared preference
+                Map<String, String> item = new HashMap<String, String>();
+=======
             favouriteBusData = new ArrayList<Map<String, Object>>();
             for (int i = 1; i <= count; i++) {
                 // Load from shared preference
                 Map<String, Object> item = new HashMap<String, Object>();
+>>>>>>> master
                 String routeTag = sp.getString(AppData.ROUTE_TAG + i,"");
                 String stopTag = sp.getString(AppData.STOP_TAG + i,"");
                 String routeName = sp.getString(AppData.ROUTE_NAME + i, "N/A");
@@ -204,6 +246,13 @@ public class SettingsActivity extends AppCompatActivity {
                 // Query for data and update to in-memory storage
                 item.put(AppData.BUS_INFO_DESCRIPTION, routeName + " @ " + stopName);
                 item.put(AppData.BUS_INFO_APPROACHING_TIME, findRecentBusesOfRouteAtStop(routeTag, stopTag));
+<<<<<<< HEAD
+                item.put(AppData.ROUTE_NAME, routeName);
+                item.put(AppData.ROUTE_TAG, routeTag);
+                item.put(AppData.STOP_NAME, stopName);
+                item.put(AppData.STOP_TAG, stopTag);
+=======
+>>>>>>> master
                 favouriteBusData.add(item);
             }
             return "OK";
@@ -222,6 +271,116 @@ public class SettingsActivity extends AppCompatActivity {
                     )
             );
         }
+<<<<<<< HEAD
+
+        private String findRecentBusesOfRouteAtStop (String route, String stop) {
+            // Init data
+            ArrayList<String> routeBusVehicleIds = new ArrayList<>();
+            ArrayList<BusStopTime> stopTimes = new ArrayList<>();
+            List<BusStop> allBusStops = new ArrayList<>();
+            ArrayList<Integer> targetTimes = new ArrayList<>();
+            // Get all bus ids in queried route
+            ArrayList<BusVehicle> routeBusVehicles =
+                    RUTransitApp.getBusData().getBusTagsToBusRoutes().get(route).getActiveBuses();
+            for (BusVehicle bus : routeBusVehicles) {
+                routeBusVehicleIds.add(bus.getVehicleId());
+            }
+            // Get all BusStopTime at queried bus stop
+            allBusStops = Arrays.asList(RUTransitApp.getBusData().getAllBusStops());
+            for (BusRoute findRoute : BusData.getActiveRoutes()) {
+                if (findRoute.getTag().equals(route)) {
+                    allBusStops = Arrays.asList(findRoute.getBusStops());
+                    NextBusAPI.saveBusStopTimes(findRoute);
+                }
+            }
+            if (allBusStops == null) {
+                return "No approaching buses";
+            } else {
+                for (BusStop checkStop : allBusStops) {
+                    if (checkStop.getTag().equals(stop)) {
+                        stopTimes = checkStop.getTimes();
+                        break;
+                    }
+                }
+            }
+            // Filter BusStopTime and find out time for needed route
+            if (stopTimes == null) {
+                return "No approaching buses";
+            } else {
+                for (BusStopTime stopTime : stopTimes) {
+                    if (routeBusVehicleIds.contains(stopTime.getVehicleId())) {
+                        targetTimes.add(stopTime.getMinutes());
+                    }
+                }
+            }
+            // toString
+            Collections.sort(targetTimes);
+            if (targetTimes.size() == 0) {
+                return "No approaching buses";
+            } else {
+                StringBuilder sb = new StringBuilder("Coming in ");
+                for (int targetTime : targetTimes) {
+                    sb.append(targetTime).append(" / ");
+                }
+                sb.setLength(sb.length() - 3);
+                String result = sb.toString();
+                Log.d("Bus time", route + " @ " + stop + " : " + result);
+                return result+ " minutes";
+            }
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        timer.cancel();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Setup auto refresh
+        timer = new Timer();
+        TimerTask timedRecentBusRefresher = new TimerTask() {
+            @Override
+            public void run() {
+                new SettingsActivity.RefreshApproachingBuses().execute();
+            }
+        };
+        timer.schedule(timedRecentBusRefresher, 0, 10000);
+    }
+
+    // Setup Jobs For Long-press Menu
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int favouriteItemId = (int)info.id;
+        Log.d(TAG, "Selected item: " + Integer.toString(favouriteItemId));
+        switch (item.getItemId()) {
+            case 0:
+                // Notify
+                Map<String, String> favouriteBus = favouriteBusData.get(favouriteItemId);
+                Toast.makeText(
+                        SettingsActivity.this,
+                        "Tracking " + favouriteBus.get(AppData.ROUTE_NAME) + " @ " + favouriteBus.get(AppData.STOP_NAME),
+                        Toast.LENGTH_LONG
+                        ).show();
+                Intent serviceIntent = new Intent(this,BusArrivalNotify.class);
+                serviceIntent.putExtra(AppData.ROUTE_NAME, favouriteBus.get(AppData.ROUTE_NAME));
+                serviceIntent.putExtra(AppData.ROUTE_TAG, favouriteBus.get(AppData.ROUTE_TAG));
+                serviceIntent.putExtra(AppData.STOP_NAME, favouriteBus.get(AppData.STOP_NAME));
+                serviceIntent.putExtra(AppData.STOP_TAG, favouriteBus.get(AppData.STOP_TAG));
+                startService(serviceIntent);
+                return true;
+            case 1:
+                // Delete
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+}
+=======
 
         private String findRecentBusesOfRouteAtStop (String route, String stop) {
             // Init data
@@ -300,3 +459,4 @@ public class SettingsActivity extends AppCompatActivity {
         timer.schedule(timedRecentBusRefresher, 0, 10000);
     }
 }
+>>>>>>> master

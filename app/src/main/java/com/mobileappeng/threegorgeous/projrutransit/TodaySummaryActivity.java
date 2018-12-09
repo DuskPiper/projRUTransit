@@ -84,7 +84,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
     private List<String> mDatas;
     private List<String> titles;
     private List<String> wendu;
-    private List<Map<String, Object>> favouriteBusData = new ArrayList<Map<String, Object>>();
+    private List<Map<String, String>> favouriteBusData;
     private RecyclerView history_today;
     private String city = "Piscataway";
     private List<DataBean> dataBeanList;
@@ -112,7 +112,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
         url_list[3]="";
         url_list[4]="";
 
-        favouriteBusData = new ArrayList<Map<String, Object>>();
+        favouriteBusData = new ArrayList<Map<String, String>>();
         new FindRecentBuses().execute();
 
         bus_timetable=(ListView) findViewById(R.id.bus_timetable);
@@ -235,7 +235,6 @@ public class TodaySummaryActivity extends AppCompatActivity {
         btn_click_plus_bus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-
                 startActivityForResult(new Intent(TodaySummaryActivity.this, FavouriteActivity.class),1);
                 // startNotifyService("WKND1", "wknd1", "SCOTT", "scott");
             }
@@ -355,7 +354,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
         wendu = new ArrayList<>(Arrays.asList("","","","",""));
     }
 
-    private List<Map<String, Object>> loadFavouriteBusData() {
+    private List<Map<String, String>> loadFavouriteBusData() {
         if (favouriteBusData != null) {
             favouriteBusData.clear();
         }
@@ -363,7 +362,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
         int count = share.getInt("Number",0);
         for (int i = 1; i <= count; i++) {
 
-            Map<String, Object> item = new HashMap<String, Object>();
+            Map<String, String> item = new HashMap<String, String>();
 
             String route = share.getString(AppData.ROUTE_TAG + i,"No_data");
             String stop = share.getString(AppData.STOP_TAG + i,"No_data");
@@ -547,10 +546,10 @@ public class TodaySummaryActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             SharedPreferences sp = getSharedPreferences("Favourite_Stop",Activity.MODE_PRIVATE);
             int count = sp.getInt("Number",0);
-            favouriteBusData = new ArrayList<Map<String, Object>>();
+            favouriteBusData = new ArrayList<Map<String, String>>();
             for (int i = 1; i <= count; i++) {
                 // Load from shared preference
-                Map<String, Object> item = new HashMap<String, Object>();
+                Map<String, String> item = new HashMap<String, String>();
                 String routeTag = sp.getString(AppData.ROUTE_TAG + i,"");
                 String stopTag = sp.getString(AppData.STOP_TAG + i,"");
                 String routeName = sp.getString(AppData.ROUTE_NAME + i, "N/A");
