@@ -8,6 +8,7 @@ import github.vatsal.easyweather.WeatherMap;
 import github.vatsal.easyweather.retrofit.models.ForecastResponseModel;
 import github.vatsal.easyweather.retrofit.models.Weather;
 import github.vatsal.easyweather.retrofit.models.WeatherResponseModel;
+import retrofit2.http.HEAD;
 
 import android.Manifest;
 import android.app.Activity;
@@ -235,6 +236,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
         btn_click_plus_bus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
+
                 startActivityForResult(new Intent(TodaySummaryActivity.this, FavouriteActivity.class),1);
                 //Toast.makeText(TodaySummaryActivity.this,"Button点击事件1",Toast.LENGTH_LONG).show();
             }
@@ -338,11 +340,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
 
     ////////////////////////// START NOTIFY SERVICE HERE //////////////////////////////
     private void startNotifyService(String routeName, String routeTag, String stopName, String stopTag) {
-<<<<<<< HEAD
         Intent serviceIntent = new Intent(this,BusArrivalNotify.class);
-=======
-        Intent serviceIntent = new Intent();
->>>>>>> master
         serviceIntent.putExtra(AppData.ROUTE_NAME, routeName);
         serviceIntent.putExtra(AppData.ROUTE_TAG, routeTag);
         serviceIntent.putExtra(AppData.STOP_NAME, stopName);
@@ -382,7 +380,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
         return favouriteBusData;
     }
 
-    private void setJokeDate(){
+    private void setJokeData(){
         history_today.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new RecyclerAdapter(this,dataBeanList);
         history_today.setAdapter(mAdapter);
@@ -517,7 +515,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
             dataBean.setChildBean(dataBean);
             dataBeanList.add(dataBean);
         }
-        setJokeDate();
+        setJokeData();
     }
 
     @Override
