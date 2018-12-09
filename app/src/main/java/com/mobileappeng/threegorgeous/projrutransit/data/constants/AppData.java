@@ -8,11 +8,8 @@ public class AppData {
     public static final String ALL_ROUTES_URL = BASE_URL + "routeConfig";
     public static final String PREDICTIONS_URL = BASE_URL + "predictionsForMultiStops";
 
-    /*// Google Analytics
-    public static final int ROUTE_NAME_DIMEN = 1;
-    public static final int PAGE_CLICKED_FROM_DIMEN = 2;
-    public static final int ORIGIN_DIMEN = 3;
-    public static final int DESTINATION_DIMEN = 4;*/
+    // Request Codes
+    public static final int REQUEST_ADD_NEW_FAVOURITE = 1000;
 
     // Shared Preferences
     public static final String ROUTE_TAG = "bus_route_tag";
