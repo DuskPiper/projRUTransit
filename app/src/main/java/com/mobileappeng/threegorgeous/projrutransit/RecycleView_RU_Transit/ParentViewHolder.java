@@ -23,7 +23,6 @@ public class ParentViewHolder extends BaseViewHolder {
     private View view;
     private RelativeLayout containerLayout;
     private TextView parentLeftView;
-    private TextView parentRightView;
     private ImageView expand;
     private View parentDashedView;
 
@@ -37,14 +36,13 @@ public class ParentViewHolder extends BaseViewHolder {
 
         containerLayout = (RelativeLayout) view.findViewById(R.id.container);
         parentLeftView = (TextView) view.findViewById(R.id.parent_left_text);
-        parentRightView = (TextView) view.findViewById(R.id.parent_right_text);
         expand = (ImageView) view.findViewById(R.id.expend);
         parentDashedView = view.findViewById(R.id.parent_dashed_view);
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) expand
                 .getLayoutParams();
         expand.setLayoutParams(params);
         parentLeftView.setText(dataBean.getParentLeftTxt());
-        parentRightView.setText(dataBean.getParentRightTxt());
+
 
         if (dataBean.isExpand()) {
             expand.setRotation(90);

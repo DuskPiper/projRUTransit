@@ -1,12 +1,23 @@
 package com.mobileappeng.threegorgeous.projrutransit;
 
+import android.Manifest;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.FeatureInfo;
+import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
+import android.hardware.Camera;
+import android.hardware.camera2.CameraManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.IBinder;
+import android.os.Vibrator;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -26,6 +37,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static android.app.Notification.DEFAULT_ALL;
+
 public class BusArrivalNotify extends Service {
     public static final String TAG = "Bus Arrival Service";
     private String routeTag;
@@ -37,35 +50,15 @@ public class BusArrivalNotify extends Service {
     private TimerTask timedRecentBusRefresher;
     private TimerTask timedNotifier;
     private int failedTrials = 0;
+    private NotificationChannel b;
 
-    public void send(){
-        Intent intent = new Intent(getApplicationContext() , TodaySummaryActivity.class);
-        PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-
-        Notification notify =new Notification.Builder(this)
-                //设置打开通知后， 该标题栏通知自动消失
-                .setAutoCancel(true)
-                //设置显示在状态栏中的通知提示信息
-                .setTicker("有新消息")
-                //设置通知内容的标题
-                .setContentTitle("一条新消息")
-                //设置通知内容
-                .setContentText("阿奇从远方发来贺电")
-                //设置使用系统默认的声音、默认LED灯
-                .setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_LIGHTS)
-                //设置消息中显示的发送时间
-                .setWhen(System.currentTimeMillis())
-                .setShowWhen(true)   //设置是否setWhe指定的显示时间
-                //返回Notification对象
-                .build();
-
-        //发送通知
-        nm.notify(NOTIFY, notify);
-
-    }
+    private NotificationManager mNotificationManager;
+    private CameraManager manager;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+
         // Load Intent data
         routeName = intent.getStringExtra(AppData.ROUTE_NAME);
         routeTag = intent.getStringExtra(AppData.ROUTE_TAG);
@@ -99,7 +92,9 @@ public class BusArrivalNotify extends Service {
         timer.schedule(timedNotifier, 0, 2000);
         timer.schedule(timedRecentBusRefresher, 0, 10000);
 
+
         return super.onStartCommand(intent, flags, startId);
+
     }
 
     @Override
@@ -116,10 +111,34 @@ public class BusArrivalNotify extends Service {
 
     private void sendNotification() {
         // Notify
-        Toast.makeText(
+       /* Toast.makeText(
                 getApplicationContext(),
                 "Bus " + routeName + " approaching " + stopName,
                 Toast.LENGTH_LONG).show();
+       */
+
+        flshLight();
+        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        long[] pattern = {300, 100, 200, 500, 300, 100}; // OFF/ON/OFF/ON
+        vibrator.vibrate(pattern, -1);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            b = new NotificationChannel("Notify","Bus Notify",NotificationManager.IMPORTANCE_HIGH);
+            mNotificationManager.createNotificationChannel(b);
+        }
+        flshLight();
+
+        Notification notification = new NotificationCompat.Builder(getApplicationContext())
+                .setContentText(" Approaching " + stopName)
+                .setContentTitle("Bus " + routeName)
+                .setSmallIcon(R.drawable.ic_launcher_background)//Renew LOGO
+                .setWhen(System.currentTimeMillis())
+                .setOngoing(true)
+                .setDefaults(DEFAULT_ALL)
+                .setChannelId("Notify")
+                .build();
+        flshLight();
+        mNotificationManager.notify(1, notification);
+        flshLight();
         ////////////////////////// NOTIFY HERE //////////////////////////////
     }
 
@@ -189,5 +208,14 @@ public class BusArrivalNotify extends Service {
             }
         }
     }
+
+    private void flshLight() {
+        try {
+
+            manager = (CameraManager) this.getSystemService(Context.CAMERA_SERVICE);
+            manager.setTorchMode("0", true);// "0"是主闪光灯
+            manager.setTorchMode("0", false);
+        } catch (Exception e) {}
+     }
 
 }

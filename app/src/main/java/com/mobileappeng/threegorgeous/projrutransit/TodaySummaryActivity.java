@@ -9,6 +9,7 @@ import github.vatsal.easyweather.retrofit.models.ForecastResponseModel;
 import github.vatsal.easyweather.retrofit.models.Weather;
 import github.vatsal.easyweather.retrofit.models.WeatherResponseModel;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -16,7 +17,9 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.VibrationEffect;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -81,7 +84,6 @@ public class TodaySummaryActivity extends AppCompatActivity {
     private List<String> titles;
     private List<String> wendu;
     private List<Map<String, Object>> favouriteBusData = new ArrayList<Map<String, Object>>();
-    private MiuiWeatherView weatherView;
     private RecyclerView history_today;
     private String city = "Piscataway";
     private List<DataBean> dataBeanList;
@@ -98,11 +100,6 @@ public class TodaySummaryActivity extends AppCompatActivity {
     private Timer timer;
     private TimerTask timedRecentBusRefresher;
 
-    NotificationManager notificationManager;
-    Notification notification = null;
-    NotificationManager nm ;
-    //用这个变量来唯一的标定一个Notification对象
-    final static int NOTIFY = 0x123;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,11 +111,9 @@ public class TodaySummaryActivity extends AppCompatActivity {
         url_list[2]="";
         url_list[3]="";
         url_list[4]="";
-        nm=(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
         favouriteBusData = new ArrayList<Map<String, Object>>();
         new FindRecentBuses().execute();
-        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
-
 
         bus_timetable=(ListView) findViewById(R.id.bus_timetable);
         hourly_weather=(RecyclerView) findViewById(R.id.hourly_weather);
@@ -137,17 +132,17 @@ public class TodaySummaryActivity extends AppCompatActivity {
         shidu_textview=(TextView)findViewById(R.id.shidu_textView);
 
         history_today=(RecyclerView) findViewById(R.id.history_today);
-        initData();
+        initJokeDate();
         history_today.setAdapter(mAdapter);
 
         loadWeather(city);
-        weatherView = (MiuiWeatherView) findViewById(R.id.Miui_weather_view);
+       /* weatherView = (MiuiWeatherView) findViewById(R.id.Miui_weather_view);
         List<WeatherBean> data = new ArrayList<>();
         WeatherBean b1 = new WeatherBean(WeatherBean.SUN,20,"05:00");
         WeatherBean b2 = new WeatherBean(WeatherBean.RAIN,22,"日出","05:30");
         data.add(b1);
         data.add(b2);
-        weatherView.setData(data);
+        weatherView.setData(data);*/
 
 
         bus_CursorAdapter=new SimpleAdapter(TodaySummaryActivity.this,
@@ -240,8 +235,6 @@ public class TodaySummaryActivity extends AppCompatActivity {
         btn_click_plus_bus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-
-               // sendNotification();
                 startActivityForResult(new Intent(TodaySummaryActivity.this, FavouriteActivity.class),1);
                 //Toast.makeText(TodaySummaryActivity.this,"Button点击事件1",Toast.LENGTH_LONG).show();
             }
@@ -345,7 +338,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
 
     ////////////////////////// START NOTIFY SERVICE HERE //////////////////////////////
     private void startNotifyService(String routeName, String routeTag, String stopName, String stopTag) {
-        Intent serviceIntent = new Intent();
+        Intent serviceIntent = new Intent(this,BusArrivalNotify.class);
         serviceIntent.putExtra(AppData.ROUTE_NAME, routeName);
         serviceIntent.putExtra(AppData.ROUTE_TAG, routeTag);
         serviceIntent.putExtra(AppData.STOP_NAME, stopName);
@@ -385,27 +378,10 @@ public class TodaySummaryActivity extends AppCompatActivity {
         return favouriteBusData;
     }
 
-    private void initData(){
-        dataBeanList = new ArrayList<>();
-        for (int i = 1; i <= 5; i++) {
-            dataBean = new DataBean();
-            dataBean.setID(i+"");
-            dataBean.setType(0);
-            dataBean.setParentLeftTxt("父--"+i);
-            dataBean.setParentRightTxt("父内容--"+i);
-            dataBean.setChildLeftTxt("子--"+i);
-            dataBean.setChildRightTxt("子内容--"+i);
-            dataBean.setChildBean(dataBean);
-            dataBeanList.add(dataBean);
-        }
-        setData();
-    }
-
-    private void setData(){
+    private void setJokeDate(){
         history_today.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new RecyclerAdapter(this,dataBeanList);
         history_today.setAdapter(mAdapter);
-        //滚动监听
         mAdapter.setOnScrollListener(new RecyclerAdapter.OnScrollListener() {
             @Override
             public void scrollTo(int pos) {
@@ -498,30 +474,48 @@ public class TodaySummaryActivity extends AppCompatActivity {
             }
         });
     }
-    private void sendNotification() {
-        /*long[] pattern = {0, 100, 1000};
-        NotificationManager notifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("最简单的Notification")
-                .setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_LIGHTS)
-                .setContentText("只有小图标、标题、内容")
-                .setWhen(System.currentTimeMillis())
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setVibrate(pattern);
-*/
-        NotificationChannel mChannel = new NotificationChannel("channel_001", "name", NotificationManager.IMPORTANCE_LOW);
-        notificationManager.createNotificationChannel(mChannel);
-        notification = new Notification.Builder(getApplicationContext())
-                .setChannelId("channel_001")
-                .setContentTitle("活动")
-                .setContentText("您有一项新活动")
-                .setSmallIcon(R.drawable.bigrain).build();
-        notificationManager.notify(1, notification);
 
-        //通过builder.build()方法生成Notification对象,并发送通知,id=1
-       // notifyManager.notify(1, builder.build());
+    private void initJokeDate(){
+        dataBeanList = new ArrayList<>();
+        {
+            dataBean = new DataBean();
+            dataBean.setType(0);
+            dataBean.setID("0");
+            dataBean.setParentLeftTxt("What do you call dangerous precipitation?");
+            dataBean.setChildLeftTxt("A rain of terror");
+            dataBean.setChildBean(dataBean);
+            dataBeanList.add(dataBean);
+        }
+        {
+            dataBean = new DataBean();
+            dataBean.setType(0);
+            dataBean.setID("1");
+            dataBean.setParentLeftTxt("What do you call a month's worth of rain?");
+            dataBean.setChildLeftTxt("England");
+            dataBean.setChildBean(dataBean);
+            dataBeanList.add(dataBean);
+        }
+        {
+            dataBean = new DataBean();
+            dataBean.setType(0);
+            dataBean.setID("2");
+            dataBean.setParentLeftTxt("What do snowmen call their offspring?");
+            dataBean.setChildLeftTxt("Chill-dren");
+            dataBean.setChildBean(dataBean);
+            dataBeanList.add(dataBean);
+        }
+        {
+            dataBean = new DataBean();
+            dataBean.setType(0);
+            dataBean.setID("3");
+            dataBean.setParentLeftTxt("How does a snowman get to work?");
+            dataBean.setChildLeftTxt("By icicle");
+            dataBean.setChildBean(dataBean);
+            dataBeanList.add(dataBean);
+        }
+        setJokeDate();
     }
+
     @Override
     public void onActivityResult (int requestCode, int resultCode, Intent data) {
         new FindRecentBuses().execute();
