@@ -373,7 +373,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void refreshNavigationRoutes() {
         if (navigation != null) {
-            navigation.getMenu().findItem(R.id.custom_BG).setTitle("").setCheckable(false).setChecked(false);
+            navigation.getMenu().findItem(R.id.custom_bg).setTitle("").setCheckable(false).setChecked(false);
             if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
             {
                 moveCamera(40.498, -74.445, 13); // all campuses

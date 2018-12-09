@@ -275,7 +275,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
                         Log.d("Navigation", "Seleted Settings");
                         startActivity(new Intent(TodaySummaryActivity.this, SettingsActivity.class));
                         return true;
-                    case R.id.custom_BG:
+                    case R.id.custom_bg:
                         // Go to activity: settings
                         Log.d("Navigation", "Seleted Settings");
                         startActivity(new Intent(TodaySummaryActivity.this, SettingsActivity.class));
@@ -409,7 +409,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()) {
-            case R.id.custom_BG://监听菜单按钮
+            case R.id.custom_bg://监听菜单按钮
                 startActivity(new Intent(TodaySummaryActivity.this, SettingsActivity.class));
                 break;
         }
