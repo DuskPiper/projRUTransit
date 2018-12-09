@@ -9,12 +9,21 @@ import github.vatsal.easyweather.retrofit.models.ForecastResponseModel;
 import github.vatsal.easyweather.retrofit.models.Weather;
 import github.vatsal.easyweather.retrofit.models.WeatherResponseModel;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.VibrationEffect;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -60,6 +69,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import android.os.Vibrator;
 
 public class TodaySummaryActivity extends AppCompatActivity {
     private NavigationView navigation;
@@ -74,7 +84,6 @@ public class TodaySummaryActivity extends AppCompatActivity {
     private List<String> titles;
     private List<String> wendu;
     private List<Map<String, Object>> favouriteBusData = new ArrayList<Map<String, Object>>();
-    private MiuiWeatherView weatherView;
     private RecyclerView history_today;
     private String city = "Piscataway";
     private List<DataBean> dataBeanList;
@@ -90,6 +99,8 @@ public class TodaySummaryActivity extends AppCompatActivity {
     private ScrollView scrollView;
     private Timer timer;
     private TimerTask timedRecentBusRefresher;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,17 +132,17 @@ public class TodaySummaryActivity extends AppCompatActivity {
         shidu_textview=(TextView)findViewById(R.id.shidu_textView);
 
         history_today=(RecyclerView) findViewById(R.id.history_today);
-        initData();
+        initJokeDate();
         history_today.setAdapter(mAdapter);
 
         loadWeather(city);
-        weatherView = (MiuiWeatherView) findViewById(R.id.Miui_weather_view);
+       /* weatherView = (MiuiWeatherView) findViewById(R.id.Miui_weather_view);
         List<WeatherBean> data = new ArrayList<>();
         WeatherBean b1 = new WeatherBean(WeatherBean.SUN,20,"05:00");
         WeatherBean b2 = new WeatherBean(WeatherBean.RAIN,22,"日出","05:30");
         data.add(b1);
         data.add(b2);
-        weatherView.setData(data);
+        weatherView.setData(data);*/
 
 
         bus_CursorAdapter=new SimpleAdapter(TodaySummaryActivity.this,
@@ -146,7 +157,6 @@ public class TodaySummaryActivity extends AppCompatActivity {
         bus_timetable.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("Bus_timetale", "Long Click");
                 SharedPreferences share=getSharedPreferences("Favourite_Stop",Activity.MODE_PRIVATE);
                 int count=share.getInt("Number",0);
                 for (int i = position+1; i <=count; i++) {
@@ -225,11 +235,11 @@ public class TodaySummaryActivity extends AppCompatActivity {
         btn_click_plus_bus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-
                 startActivityForResult(new Intent(TodaySummaryActivity.this, FavouriteActivity.class),1);
                 //Toast.makeText(TodaySummaryActivity.this,"Button点击事件1",Toast.LENGTH_LONG).show();
             }
         });
+
 
 
 
@@ -328,7 +338,11 @@ public class TodaySummaryActivity extends AppCompatActivity {
 
     ////////////////////////// START NOTIFY SERVICE HERE //////////////////////////////
     private void startNotifyService(String routeName, String routeTag, String stopName, String stopTag) {
+<<<<<<< HEAD
+        Intent serviceIntent = new Intent(this,BusArrivalNotify.class);
+=======
         Intent serviceIntent = new Intent();
+>>>>>>> master
         serviceIntent.putExtra(AppData.ROUTE_NAME, routeName);
         serviceIntent.putExtra(AppData.ROUTE_TAG, routeTag);
         serviceIntent.putExtra(AppData.STOP_NAME, stopName);
@@ -368,27 +382,10 @@ public class TodaySummaryActivity extends AppCompatActivity {
         return favouriteBusData;
     }
 
-    private void initData(){
-        dataBeanList = new ArrayList<>();
-        for (int i = 1; i <= 5; i++) {
-            dataBean = new DataBean();
-            dataBean.setID(i+"");
-            dataBean.setType(0);
-            dataBean.setParentLeftTxt("父--"+i);
-            dataBean.setParentRightTxt("父内容--"+i);
-            dataBean.setChildLeftTxt("子--"+i);
-            dataBean.setChildRightTxt("子内容--"+i);
-            dataBean.setChildBean(dataBean);
-            dataBeanList.add(dataBean);
-        }
-        setData();
-    }
-
-    private void setData(){
+    private void setJokeDate(){
         history_today.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new RecyclerAdapter(this,dataBeanList);
         history_today.setAdapter(mAdapter);
-        //滚动监听
         mAdapter.setOnScrollListener(new RecyclerAdapter.OnScrollListener() {
             @Override
             public void scrollTo(int pos) {
@@ -427,6 +424,8 @@ public class TodaySummaryActivity extends AppCompatActivity {
 
             }
         });
+
+
 
         weatherMap.getCityForecast(city, new ForecastCallback() {
             @Override
@@ -478,6 +477,47 @@ public class TodaySummaryActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void initJokeDate(){
+        dataBeanList = new ArrayList<>();
+        {
+            dataBean = new DataBean();
+            dataBean.setType(0);
+            dataBean.setID("0");
+            dataBean.setParentLeftTxt("What do you call dangerous precipitation?");
+            dataBean.setChildLeftTxt("A rain of terror");
+            dataBean.setChildBean(dataBean);
+            dataBeanList.add(dataBean);
+        }
+        {
+            dataBean = new DataBean();
+            dataBean.setType(0);
+            dataBean.setID("1");
+            dataBean.setParentLeftTxt("What do you call a month's worth of rain?");
+            dataBean.setChildLeftTxt("England");
+            dataBean.setChildBean(dataBean);
+            dataBeanList.add(dataBean);
+        }
+        {
+            dataBean = new DataBean();
+            dataBean.setType(0);
+            dataBean.setID("2");
+            dataBean.setParentLeftTxt("What do snowmen call their offspring?");
+            dataBean.setChildLeftTxt("Chill-dren");
+            dataBean.setChildBean(dataBean);
+            dataBeanList.add(dataBean);
+        }
+        {
+            dataBean = new DataBean();
+            dataBean.setType(0);
+            dataBean.setID("3");
+            dataBean.setParentLeftTxt("How does a snowman get to work?");
+            dataBean.setChildLeftTxt("By icicle");
+            dataBean.setChildBean(dataBean);
+            dataBeanList.add(dataBean);
+        }
+        setJokeDate();
     }
 
     @Override

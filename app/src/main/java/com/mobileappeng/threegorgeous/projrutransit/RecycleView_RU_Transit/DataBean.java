@@ -16,9 +16,7 @@ public class DataBean {
  
     private String ID;
     private String parentLeftTxt;
-    private String parentRightTxt;
     private String childLeftTxt;
-    private String childRightTxt;
  
     public String getParentLeftTxt() {
         return parentLeftTxt;
@@ -27,29 +25,13 @@ public class DataBean {
     public void setParentLeftTxt(String parentLeftTxt) {
         this.parentLeftTxt = parentLeftTxt;
     }
- 
-    public String getChildRightTxt() {
-        return childRightTxt;
-    }
- 
-    public void setChildRightTxt(String childRightTxt) {
-        this.childRightTxt = childRightTxt;
-    }
+
  
     public String getChildLeftTxt() {
         return childLeftTxt;
     }
- 
     public void setChildLeftTxt(String childLeftTxt) {
         this.childLeftTxt = childLeftTxt;
-    }
- 
-    public String getParentRightTxt() {
-        return parentRightTxt;
-    }
- 
-    public void setParentRightTxt(String parentRightTxt) {
-        this.parentRightTxt = parentRightTxt;
     }
  
     public int getType() {
