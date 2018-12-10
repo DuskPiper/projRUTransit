@@ -1,8 +1,6 @@
 package com.mobileappeng.threegorgeous.projrutransit;
 
-
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -12,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import com.mobileappeng.threegorgeous.projrutransit.RecycleView_RU_Transit.FavouriteAdapter;
 import com.mobileappeng.threegorgeous.projrutransit.data.constants.AppData;
@@ -25,10 +22,10 @@ import java.util.List;
 
 
 public class FavouriteActivity extends AppCompatActivity {
-    private RecyclerView favourite_route_recycleview;
-    private RecyclerView favourite_bus_stop_recycleview;
-    private FavouriteAdapter favourite_route_adapter;
-    private FavouriteAdapter favourite_stop_adapter;
+    private RecyclerView favouriteRouteView;
+    private RecyclerView favouriteStopView;
+    private FavouriteAdapter favouriteRouteAdapter;
+    private FavouriteAdapter FavouriteStopAdapter;
     private List<String> busRouteTagList;
     private List<String> busRouteNameList;
     private List<String> busStopTagList;
@@ -43,7 +40,7 @@ public class FavouriteActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.acticity_favourite);
-        click_time=0;
+        click_time = 0;
 
         busStopTagList = new ArrayList<>();
         busStopNameList = new ArrayList<>();
@@ -64,14 +61,14 @@ public class FavouriteActivity extends AppCompatActivity {
                     // Save in shared preferences
                     SharedPreferences sharedPreferences = getSharedPreferences(AppData.SHAREDPREFERENCES_FAVOURITE_NAME, Context.MODE_PRIVATE); //私有数据
                     int count = sharedPreferences.getInt(AppData.DATA_QUANTITY, 0);
-                    count += 1;
+                    count ++;
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(AppData.ROUTE_TAG + count, busRouteTagChoice);
                     editor.putString(AppData.STOP_TAG + count, busStopTagChoice);
                     editor.putString(AppData.ROUTE_NAME + count, busRouteNameChoice);
                     editor.putString(AppData.STOP_NAME + count, busStopNameChoice);
                     editor.putInt(AppData.DATA_QUANTITY, count);
-                    editor.commit();
+                    editor.apply();
 
                     // startActivity(new Intent(FavouriteActivity.this, TodaySummaryActivity.class));
                     FavouriteActivity.this.setResult(RESULT_OK);
@@ -82,33 +79,33 @@ public class FavouriteActivity extends AppCompatActivity {
                 }
 
                 //Toast.makeText(getContext()," 点击了 "+position,Toast.LENGTH_SHORT).show();
-                favourite_route_recycleview.setVisibility(RecyclerView.INVISIBLE);
-                favourite_bus_stop_recycleview.setVisibility(RecyclerView.VISIBLE);
+                favouriteRouteView.setVisibility(RecyclerView.INVISIBLE);
+                favouriteStopView.setVisibility(RecyclerView.VISIBLE);
 
             }
         };
 
 
-        favourite_route_recycleview =(RecyclerView) findViewById(R.id.favourite_bus_recycleview);
-        favourite_route_adapter=new FavouriteAdapter(this,busRouteNameList,onRecyclerviewItemClickListener);
-        favourite_route_recycleview.setLayoutManager(new LinearLayoutManager(this));
-        favourite_route_recycleview.setAdapter(favourite_route_adapter);
+        favouriteRouteView =(RecyclerView) findViewById(R.id.favourite_bus_recycleview);
+        favouriteRouteAdapter = new FavouriteAdapter(this,busRouteNameList, onRecyclerviewItemClickListener);
+        favouriteRouteView.setLayoutManager(new LinearLayoutManager(this));
+        favouriteRouteView.setAdapter(favouriteRouteAdapter);
 
 
-        favourite_bus_stop_recycleview =(RecyclerView) findViewById(R.id.favourite_bustop_recycleview);
-        favourite_stop_adapter=new FavouriteAdapter(this,busStopNameList,onRecyclerviewItemClickListener);
-        favourite_bus_stop_recycleview.setLayoutManager(new LinearLayoutManager(this));
-        favourite_bus_stop_recycleview.setAdapter(favourite_stop_adapter);
-        favourite_bus_stop_recycleview.setVisibility(RecyclerView.INVISIBLE);
+        favouriteStopView =(RecyclerView) findViewById(R.id.favourite_bustop_recycleview);
+        FavouriteStopAdapter = new FavouriteAdapter(this,busStopNameList, onRecyclerviewItemClickListener);
+        favouriteStopView.setLayoutManager(new LinearLayoutManager(this));
+        favouriteStopView.setAdapter(FavouriteStopAdapter);
+        favouriteStopView.setVisibility(RecyclerView.INVISIBLE);
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if(favourite_route_recycleview.getVisibility()==RecyclerView.INVISIBLE)
+            if(favouriteRouteView.getVisibility() == RecyclerView.INVISIBLE)
             {
-                favourite_route_recycleview.setVisibility(RecyclerView.VISIBLE);
-                favourite_bus_stop_recycleview.setVisibility(RecyclerView.INVISIBLE);
+                favouriteRouteView.setVisibility(RecyclerView.VISIBLE);
+                favouriteStopView.setVisibility(RecyclerView.INVISIBLE);
                 click_time=0;
             }
             else{
@@ -121,6 +118,7 @@ public class FavouriteActivity extends AppCompatActivity {
         }
         return true;
     }
+
     private void initBusRoutes(){
         busRouteTagList.clear();
         ArrayList<BusRoute> busRoutes = RUTransitApp.getBusData().getBusRoutes();
@@ -141,7 +139,7 @@ public class FavouriteActivity extends AppCompatActivity {
             busStopNameList.add(busStop.getTitle()); // Displayed
         }
         if(click_time!=2) {
-            favourite_stop_adapter.notifyDataSetChanged();
+            FavouriteStopAdapter.notifyDataSetChanged();
         }
     }
 }
