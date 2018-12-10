@@ -35,6 +35,7 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.stmt.query.In;
 import com.mobileappeng.threegorgeous.projrutransit.api.NextBusAPI;
 import com.mobileappeng.threegorgeous.projrutransit.api.UpdateRoutesTask;
+import com.mobileappeng.threegorgeous.projrutransit.data.constants.AppData;
 import com.mobileappeng.threegorgeous.projrutransit.data.constants.RUTransitApp;
 import com.mobileappeng.threegorgeous.projrutransit.data.model.BusData;
 import com.mobileappeng.threegorgeous.projrutransit.data.model.BusPathSegment;
@@ -127,7 +128,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Debug check
         if (DEBUG_CLEAR_SHARED_PREFERENCE) {
             DEBUG_CLEAR_SHARED_PREFERENCE = false;
-            getSharedPreferences("Favourite_Stop", Context.MODE_PRIVATE).edit().clear().commit();
+            getSharedPreferences(AppData.SHAREDPREFERENCES_FAVOURITE_NAME, Context.MODE_PRIVATE).edit().clear().commit();
         }
 
         // Set Listeners
