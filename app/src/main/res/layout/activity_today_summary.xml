@@ -20,7 +20,8 @@
             android:id="@+id/today_summary_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".TodaySummaryActivity">
+            tools:context=".TodaySummaryActivity"
+            >
 
             <ImageView
                 android:id="@+id/city_image_view"

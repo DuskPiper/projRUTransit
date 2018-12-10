@@ -15,7 +15,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         />
-
     <TextView
         android:id="@+id/manage_favourite_approaching_time"
         android:layout_width="match_parent"
