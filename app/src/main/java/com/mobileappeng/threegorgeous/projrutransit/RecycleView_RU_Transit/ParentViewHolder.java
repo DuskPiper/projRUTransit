@@ -12,10 +12,7 @@ import android.widget.TextView;
 
 import com.mobileappeng.threegorgeous.projrutransit.R;
 
-/**
- * Created by hbh on 2017/4/20.
- * 父布局ViewHolder
- */
+
 
 public class ParentViewHolder extends BaseViewHolder {
 
@@ -52,7 +49,6 @@ public class ParentViewHolder extends BaseViewHolder {
             parentDashedView.setVisibility(View.VISIBLE);
         }
 
-        //父布局OnClick监听
         containerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,7 +72,7 @@ public class ParentViewHolder extends BaseViewHolder {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void rotationExpandIcon(float from, float to) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            ValueAnimator valueAnimator = ValueAnimator.ofFloat(from, to);//属性动画
+            ValueAnimator valueAnimator = ValueAnimator.ofFloat(from, to);
             valueAnimator.setDuration(500);
             valueAnimator.setInterpolator(new DecelerateInterpolator());
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
