@@ -1,17 +1,13 @@
 package com.mobileappeng.threegorgeous.projrutransit.RecycleView_RU_Transit;
 
-/**
- * Created by hbh on 2017/4/20.
- * 实体类，模拟数据
- */
- 
+
 public class DataBean {
  
-    public static final int PARENT_ITEM = 0;//父布局
-    public static final int CHILD_ITEM = 1;//子布局
+    public static final int PARENT_ITEM = 0;
+    public static final int CHILD_ITEM = 1;
  
-    private int type;// 显示类型
-    private boolean isExpand;// 是否展开
+    private int type;
+    private boolean isExpand;
     private DataBean childBean;
  
     private String ID;

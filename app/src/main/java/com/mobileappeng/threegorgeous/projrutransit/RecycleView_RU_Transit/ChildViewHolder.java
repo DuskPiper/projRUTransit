@@ -6,10 +6,6 @@ import android.widget.TextView;
 
 import com.mobileappeng.threegorgeous.projrutransit.R;
 
-/**
- * Created by hbh on 2017/4/20.
- * 子布局ViewHolder
- */
 
 public class ChildViewHolder extends BaseViewHolder {
 

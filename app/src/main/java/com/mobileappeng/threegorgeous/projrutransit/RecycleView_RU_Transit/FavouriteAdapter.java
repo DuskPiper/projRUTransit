@@ -46,9 +46,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
         return mDatas.size();
     }
 
-    /**
-     * 创建ViewHolder
-     */
+
     @Override
     public FavouriteAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = mInflater.inflate(R.layout.recycleview_bus_name_and_stop,viewGroup, false);
@@ -61,9 +59,6 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
         return viewHolder;
     }
 
-    /**
-     * 设置值
-     */
     @Override
     public void onBindViewHolder(final FavouriteAdapter.ViewHolder viewHolder, final int i) {
         viewHolder.recycleview_item_bus.setText(mDatas.get(i));

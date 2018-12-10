@@ -10,11 +10,7 @@ import com.mobileappeng.threegorgeous.projrutransit.R;
 
 import java.util.List;
 
-/**
- * Created by hbh on 2017/4/20.
- * 适配器
- */
- 
+
 public class RecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
  
     private Context context;
@@ -44,11 +40,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         }
     }
  
-    /**
-     * 根据不同的类型绑定View
-     * @param holder
-     * @param position
-     */
+
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         switch (getItemViewType(position)){
@@ -76,55 +68,44 @@ public class RecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     private ItemClickListener itemClickListener = new ItemClickListener() {
         @Override
         public void onExpandChildren(DataBean bean) {
-            int position = getCurrentPosition(bean.getID());//确定当前点击的item位置
-            DataBean children = getChildDataBean(bean);//获取要展示的子布局数据对象，注意区分onHideChildren方法中的getChildBean()。
+            int position = getCurrentPosition(bean.getID());
+            DataBean children = getChildDataBean(bean);
             if (children == null) {
                 return;
             }
-            add(children, position + 1);//在当前的item下方插入
-            if (position == dataBeanList.size() - 2 && mOnScrollListener != null) { //如果点击的item为最后一个
-                mOnScrollListener.scrollTo(position + 1);//向下滚动，使子布局能够完全展示
+            add(children, position + 1);
+            if (position == dataBeanList.size() - 2 && mOnScrollListener != null) {
+                mOnScrollListener.scrollTo(position + 1);
             }
         }
  
         @Override
         public void onHideChildren(DataBean bean) {
-            int position = getCurrentPosition(bean.getID());//确定当前点击的item位置
-            DataBean children = bean.getChildBean();//获取子布局对象
+            int position = getCurrentPosition(bean.getID());
+            DataBean children = bean.getChildBean();
             if (children == null) {
                 return;
             }
-            remove(position + 1);//删除
+            remove(position + 1);
             if (mOnScrollListener != null) {
                 mOnScrollListener.scrollTo(position);
             }
         }
     };
  
-    /**
-     * 在父布局下方插入一条数据
-     * @param bean
-     * @param position
-     */
+
     public void add(DataBean bean, int position) {
         dataBeanList.add(position, bean);
         notifyItemInserted(position);
     }
  
-    /**
-     *移除子布局数据
-     * @param position
-     */
+
     protected void remove(int position) {
         dataBeanList.remove(position);
         notifyItemRemoved(position);
     }
  
-    /**
-     * 确定当前点击的item位置并返回
-     * @param uuid
-     * @return
-     */
+
     protected int getCurrentPosition(String uuid) {
         for (int i = 0; i < dataBeanList.size(); i++) {
             if (uuid.equalsIgnoreCase(dataBeanList.get(i).getID())) {
@@ -133,14 +114,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         }
         return -1;
     }
- 
-    /**
-     * 封装子布局数据对象并返回
-     * 注意，此处只是重新封装一个DataBean对象，为了标注Type为子布局数据，进而展开，展示数据
-     * 要和onHideChildren方法里的getChildBean()区分开来
-     * @param bean
-     * @return
-     */
+
     private DataBean getChildDataBean(DataBean bean){
         DataBean child = new DataBean();
         child.setType(1);
@@ -149,9 +123,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         return child;
     }
  
-    /**
-     * 滚动监听接口
-     */
+
     public interface OnScrollListener{
         void scrollTo(int pos);
     }
