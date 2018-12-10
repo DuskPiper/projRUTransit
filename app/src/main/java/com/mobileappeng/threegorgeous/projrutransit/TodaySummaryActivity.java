@@ -275,11 +275,6 @@ public class TodaySummaryActivity extends AppCompatActivity {
                         Log.d("Navigation", "Seleted Settings");
                         startActivity(new Intent(TodaySummaryActivity.this, SettingsActivity.class));
                         return true;
-                    case R.id.custom_BG:
-                        // Go to activity: settings
-                        Log.d("Navigation", "Seleted Settings");
-                        startActivity(new Intent(TodaySummaryActivity.this, SettingsActivity.class));
-                        return true;
                     case R.id.navigation_1:
                         startActivity(new Intent(TodaySummaryActivity.this, MapsActivity.class));
                         //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
@@ -400,21 +395,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
             }
         });
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.activity_maps_drawer, menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch (item.getItemId()) {
-            case R.id.custom_BG://监听菜单按钮
-                startActivity(new Intent(TodaySummaryActivity.this, SettingsActivity.class));
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+
 
 
 

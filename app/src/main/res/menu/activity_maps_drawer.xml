@@ -10,11 +10,6 @@
         <item
             android:id="@+id/navigation_today"
             android:title="Today"/>
-        <item
-            android:id="@+id/custom_BG"
-            android:title="Custom BG"
-            android:orderInCategory="100"
-            app:showAsAction="always" />
     </group>
     <item
         android:id="@+id/navigation_settings"

@@ -2,40 +2,27 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
-        android:id="@+id/manage_favourite_name"
-        android:layout_width="match_parent"
-<<<<<<< HEAD
-        android:layout_height="32dp"
-        android:textSize="24sp"
-        android:textColor="#000000"
-        android:gravity="start"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-=======
-        android:layout_height="30dp"
-        android:textSize="24sp"
-        android:textColor="#000000"
-        android:gravity="start"
->>>>>>> master
-        />
+        <TextView
+            android:id="@+id/manage_favourite_name"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:textSize="24sp"
+            android:textColor="#000000"
+            android:gravity="start"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            />
 
-    <TextView
-        android:id="@+id/manage_favourite_approaching_time"
-        android:layout_width="match_parent"
-<<<<<<< HEAD
-        android:layout_height="24dp"
-        android:textColor="#848484"
-        android:textSize="16sp"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="8dp"
-=======
-        android:layout_height="16dp"
-        android:textColor="#b1000000"
-        android:textSize="12sp"
->>>>>>> master
-        app:layout_constraintTop_toBottomOf="@+id/manage_favourite_name" />
-
+        <TextView
+            android:id="@+id/manage_favourite_approaching_time"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="16dp"
+            android:textColor="#848484"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@+id/manage_favourite_name" />
 </android.support.constraint.ConstraintLayout>
