@@ -105,7 +105,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         stopMarker = BitmapDescriptorFactory.fromResource(R.drawable.bus_stop);
         activeBusMarkers = new ArrayList<>();
         busStopMarkers = new ArrayList<>();
-        showRoute = "b";
+        showRoute = "b"; // default
 
         // Setup auto refresh
         timer = new Timer();
@@ -338,7 +338,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         new UpdateMarkers().execute();
 
         // Draws the bus route
-        int polyLineColor = Color.BLUE;
+        int polyLineColor = Color.BLACK;
         if (route != null) {
             pathSegments = route.getBusPathSegments();
         } else {
