@@ -13,7 +13,7 @@
     </group>
     <item
         android:id="@+id/navigation_settings"
-        android:title="Settings"/>
+        android:title="My Favourite"/>
     <item
     android:id="@+id/navigation_1"
     android:title="See Routes"/>

@@ -1,6 +1,5 @@
 package com.mobileappeng.threegorgeous.projrutransit;
 
-import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -8,24 +7,13 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.FeatureInfo;
-import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
-import android.hardware.Camera;
 import android.hardware.camera2.CameraManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.IBinder;
-
 import android.util.Log;
-import android.widget.Toast;
 
 import com.mobileappeng.threegorgeous.projrutransit.api.NextBusAPI;
 import com.mobileappeng.threegorgeous.projrutransit.data.constants.AppData;
@@ -43,8 +31,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import retrofit2.http.HEAD;
-
 import static android.app.Notification.DEFAULT_ALL;
 
 public class BusArrivalNotify extends Service {
@@ -55,17 +41,13 @@ public class BusArrivalNotify extends Service {
     private String stopName;
     private int closestTime = Integer.MAX_VALUE;
     private Timer timer;
-    private TimerTask timedRecentBusRefresher;
-    private TimerTask timedNotifier;
     private int failedTrials = 0;
-    private NotificationChannel b;
-
     private NotificationManager mNotificationManager;
-    private CameraManager manager;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
             mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+            
         // Load Intent data
         routeName = intent.getStringExtra(AppData.ROUTE_NAME);
         routeTag = intent.getStringExtra(AppData.ROUTE_TAG);
@@ -76,15 +58,16 @@ public class BusArrivalNotify extends Service {
             stopSelf();
         }
         Log.d(TAG, "Service started, checking route" + routeName + " @ " + stopName);
-        // Initialize Loopers
+        
+        // Initialize Timed Tasks
         timer = new Timer();
-        timedRecentBusRefresher = new TimerTask() {
+        TimerTask timedRecentBusRefresher = new TimerTask() {
             @Override
             public void run() {
                 new FindRecentBuses().execute();
             }
         };
-        timedNotifier = new TimerTask() {
+        TimerTask timedNotifier = new TimerTask() {
             @Override
             public void run() {
                 if (closestTime < 2) {
@@ -95,7 +78,8 @@ public class BusArrivalNotify extends Service {
                 }
             }
         };
-        // Run Loopers
+        
+        // Run Timed Tasks
         timer.schedule(timedNotifier, 0, 2000);
         timer.schedule(timedRecentBusRefresher, 0, 10000);
 
@@ -115,13 +99,13 @@ public class BusArrivalNotify extends Service {
     }
 
     private void sendNotification() {
-        flshLight();
+        sendFlashLightAlert();
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         long[] pattern = {300, 100, 200, 500, 300, 100}; // OFF/ON/OFF/ON
         vibrator.vibrate(pattern, -1);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            b = new NotificationChannel("Notify","Bus Notify",NotificationManager.IMPORTANCE_HIGH);
-            mNotificationManager.createNotificationChannel(b);
+            NotificationChannel nc = new NotificationChannel("Notify","Bus Notify",NotificationManager.IMPORTANCE_HIGH);
+            mNotificationManager.createNotificationChannel(nc);
         }
         Intent notificationIntent = new Intent(this, MapsActivity.class);
         PendingIntent contentItent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
@@ -137,11 +121,21 @@ public class BusArrivalNotify extends Service {
                 .build();
 
         for(int i=0;i<10;i++){
-        flshLight();
+        sendFlashLightAlert();
         }
         mNotificationManager.notify(1, notification);
-        flshLight();
+        sendFlashLightAlert();
 
+    }
+
+    private void sendFlashLightAlert() {
+        try {
+            CameraManager cameraManager = (CameraManager) this.getSystemService(Context.CAMERA_SERVICE);
+            cameraManager.setTorchMode("0", true);// "0"是主闪光灯
+            cameraManager.setTorchMode("0", false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private class FindRecentBuses extends AsyncTask<String, Void, Integer> {
@@ -166,16 +160,17 @@ public class BusArrivalNotify extends Service {
             // Init data
             ArrayList<String> routeBusVehicleIds = new ArrayList<>();
             ArrayList<BusStopTime> stopTimes = new ArrayList<>();
-            List<BusStop> allBusStops = new ArrayList<>();
             ArrayList<Integer> targetTimes = new ArrayList<>();
+
             // Get all bus ids in queried route
             ArrayList<BusVehicle> routeBusVehicles =
                     RUTransitApp.getBusData().getBusTagsToBusRoutes().get(route).getActiveBuses();
             for (BusVehicle bus : routeBusVehicles) {
                 routeBusVehicleIds.add(bus.getVehicleId());
             }
+
             // Get all BusStopTime at queried bus stop
-            allBusStops = Arrays.asList(RUTransitApp.getBusData().getAllBusStops());
+            List<BusStop> allBusStops = Arrays.asList(RUTransitApp.getBusData().getAllBusStops());
             for (BusRoute findRoute : BusData.getActiveRoutes()) {
                 if (findRoute.getTag().equals(route)) {
                     allBusStops = Arrays.asList(findRoute.getBusStops());
@@ -192,6 +187,7 @@ public class BusArrivalNotify extends Service {
                     }
                 }
             }
+
             // Filter BusStopTime and find out time for needed route
             if (stopTimes == null) {
                 return Integer.MAX_VALUE;
@@ -202,7 +198,8 @@ public class BusArrivalNotify extends Service {
                     }
                 }
             }
-            // toString
+
+            // Finalize
             if (targetTimes.size() == 0) {
                 return Integer.MAX_VALUE;
             } else {
@@ -210,14 +207,4 @@ public class BusArrivalNotify extends Service {
             }
         }
     }
-
-
-    private void flshLight() {
-        try {
-            manager = (CameraManager) this.getSystemService(Context.CAMERA_SERVICE);
-            manager.setTorchMode("0", true);// "0"是主闪光灯
-            manager.setTorchMode("0", false);
-        } catch (Exception e) {}
-     }
-
 }
