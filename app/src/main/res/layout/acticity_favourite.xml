@@ -22,7 +22,9 @@
         android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/favourite_bus_textview"/>
+        app:layout_constraintTop_toBottomOf="@+id/favourite_bus_textview"
+        android:paddingBottom="20dp" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/favourite_bustop_recycleview"
         android:layout_width="0dp"
@@ -30,7 +32,7 @@
         android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/favourite_bus_textview"/>
-
+        app:layout_constraintTop_toBottomOf="@+id/favourite_bus_textview"
+        android:paddingBottom="20dp"/>
 
 </android.support.constraint.ConstraintLayout>
