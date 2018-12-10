@@ -70,6 +70,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Button addFavouriteButton;
     private List<Map<String, String>> favouriteBusData = new ArrayList<Map<String, String>>();
     private Timer timer;
+    private SimpleAdapter favouriteDataAdapter;
 
 
     @Override
@@ -90,6 +91,17 @@ public class SettingsActivity extends AppCompatActivity {
         favouriteListView = (ListView)findViewById(R.id.manage_favourite_listview);
         addFavouriteButton = (Button)findViewById(R.id.manage_favourite_add_button);
 
+        // Initialize ListView
+        forceRefreshFavouriteListView();
+        /*favouriteDataAdapter = new SimpleAdapter(
+                SettingsActivity.this,
+                favouriteBusData,
+                R.layout.activity_settings_listview_peritem,
+                new String[]{AppData.BUS_INFO_DESCRIPTION, AppData.BUS_INFO_APPROACHING_TIME},
+                new int[]{R.id.manage_favourite_name,R.id.manage_favourite_approaching_time}
+        );
+        favouriteListView.setAdapter(favouriteDataAdapter);*/
+
         // Start Timed Data Fetching
         timer = new Timer();
         TimerTask timedRecentBusRefresher = new TimerTask() {
@@ -106,7 +118,7 @@ public class SettingsActivity extends AppCompatActivity {
             public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
                 menu.setHeaderTitle("Options");
                 menu.add(0, 0, 0, "Notify upon arrival");
-                menu.add(0, 0, 1, "Delete");
+                menu.add(0, 1, 1, "Delete");
             }
         });
 
@@ -211,15 +223,12 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
     private class RefreshApproachingBuses extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
             Log.d(TAG, "Update data started");
-            SharedPreferences sp = getSharedPreferences("Favourite_Stop", Activity.MODE_PRIVATE);
-            int count = sp.getInt("Number",0);
+            SharedPreferences sp = getSharedPreferences(AppData.SHAREDPREFERENCES_FAVOURITE_NAME, Activity.MODE_PRIVATE);
+            int count = sp.getInt(AppData.DATA_QUANTITY,0);
             favouriteBusData = new ArrayList<Map<String, String>>();
             for (int i = 1; i <= count; i++) {
                 // Load from shared preference
@@ -243,15 +252,8 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String resultText) {
             Log.d(TAG, "Update data complete");
-            favouriteListView.setAdapter(
-                    new SimpleAdapter(
-                            SettingsActivity.this,
-                            favouriteBusData,
-                            R.layout.activity_settings_listview_peritem,
-                            new String[]{AppData.BUS_INFO_DESCRIPTION, AppData.BUS_INFO_APPROACHING_TIME},
-                            new int[]{R.id.manage_favourite_name,R.id.manage_favourite_approaching_time}
-                    )
-            );
+            //favouriteDataAdapter.notifyDataSetChanged();
+            forceRefreshFavouriteListView();
         }
 
         private String findRecentBusesOfRouteAtStop (String route, String stop) {
@@ -320,6 +322,9 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        // Refresh ListView data
+        // favouriteDataAdapter.notifyDataSetChanged();
+        forceRefreshFavouriteListView();
         // Setup auto refresh
         timer = new Timer();
         TimerTask timedRecentBusRefresher = new TimerTask() {
@@ -355,9 +360,41 @@ public class SettingsActivity extends AppCompatActivity {
                 return true;
             case 1:
                 // Delete
+                favouriteBusData.remove(favouriteItemId);
+                saveFavouriteBusData();
+                //favouriteDataAdapter.notifyDataSetChanged();
+                forceRefreshFavouriteListView();
                 return true;
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+
+    private void saveFavouriteBusData() {
+        SharedPreferences sp = getSharedPreferences(AppData.SHAREDPREFERENCES_FAVOURITE_NAME, Activity.MODE_PRIVATE);
+        sp.edit().clear().commit(); // Clear all
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt(AppData.DATA_QUANTITY, favouriteBusData.size());
+        for (int i = 0; i < favouriteBusData.size(); i ++) {
+            String index = Integer.toString(i + 1);
+            Map<String, String> favouriteBus = favouriteBusData.get(i);
+            editor.putString(AppData.ROUTE_NAME + index, favouriteBus.get(AppData.ROUTE_NAME));
+            editor.putString(AppData.ROUTE_TAG + index, favouriteBus.get(AppData.ROUTE_TAG));
+            editor.putString(AppData.STOP_NAME + index, favouriteBus.get(AppData.STOP_NAME));
+            editor.putString(AppData.STOP_TAG + index, favouriteBus.get(AppData.STOP_TAG));
+        }
+        editor.commit();
+    }
+
+    private void forceRefreshFavouriteListView() {
+        favouriteListView.setAdapter(
+                new SimpleAdapter(
+                SettingsActivity.this,
+                favouriteBusData,
+                R.layout.activity_settings_listview_peritem,
+                new String[]{AppData.BUS_INFO_DESCRIPTION, AppData.BUS_INFO_APPROACHING_TIME},
+                new int[]{R.id.manage_favourite_name,R.id.manage_favourite_approaching_time}
+            )
+        );
     }
 }

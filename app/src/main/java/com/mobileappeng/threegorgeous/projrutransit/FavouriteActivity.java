@@ -53,7 +53,6 @@ public class FavouriteActivity extends AppCompatActivity {
         onRecyclerviewItemClickListener = new OnRecyclerviewItemClickListener() {
             @Override
             public void onItemClickListener(View v, int position) {
-
                 click_time += 1;
                 if(click_time == 1) {
                     busRouteTagChoice = busRouteTagList.get(position);
@@ -62,15 +61,16 @@ public class FavouriteActivity extends AppCompatActivity {
                 } else if(click_time == 2) {
                     busStopTagChoice = busStopTagList.get(position);
                     busStopNameChoice = busStopNameList.get(position);
-                    SharedPreferences sharedPreferences = getSharedPreferences("Favourite_Stop", Context.MODE_PRIVATE); //私有数据
-                    int count=sharedPreferences.getInt("Number",0);
-                    count+=1;
+                    // Save in shared preferences
+                    SharedPreferences sharedPreferences = getSharedPreferences(AppData.SHAREDPREFERENCES_FAVOURITE_NAME, Context.MODE_PRIVATE); //私有数据
+                    int count = sharedPreferences.getInt(AppData.DATA_QUANTITY, 0);
+                    count += 1;
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(AppData.ROUTE_TAG + count, busRouteTagChoice);
                     editor.putString(AppData.STOP_TAG + count, busStopTagChoice);
                     editor.putString(AppData.ROUTE_NAME + count, busRouteNameChoice);
                     editor.putString(AppData.STOP_NAME + count, busStopNameChoice);
-                    editor.putInt("Number",count);
+                    editor.putInt(AppData.DATA_QUANTITY, count);
                     editor.commit();
 
                     // startActivity(new Intent(FavouriteActivity.this, TodaySummaryActivity.class));

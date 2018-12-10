@@ -12,6 +12,8 @@ public class AppData {
     public static final int REQUEST_ADD_NEW_FAVOURITE = 1000;
 
     // Shared Preferences
+    public static final String SHAREDPREFERENCES_FAVOURITE_NAME = "favourite_data_saves";
+    public static final String DATA_QUANTITY = "favourite_data_quantity";
     public static final String ROUTE_TAG = "bus_route_tag";
     public static final String ROUTE_NAME = "bus_route_name";
     public static final String STOP_TAG = "bus_stop_tag";
