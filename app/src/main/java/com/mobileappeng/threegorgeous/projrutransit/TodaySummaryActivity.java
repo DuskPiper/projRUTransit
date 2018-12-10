@@ -86,29 +86,28 @@ import android.os.Vibrator;
 public class TodaySummaryActivity extends AppCompatActivity {
     private NavigationView navigation;
     private DrawerLayout drawer;
-    private SimpleAdapter bus_CursorAdapter;
-    private ListView bus_timetable;
-    private RecyclerView hourly_weather;
-    private GalleryAdapter hourly_weather_adapter;
-    private TextView city_text_view;
-    private TextView all_the_day_textview;
-    private List<String> mDatas;
+    private SimpleAdapter busCursorAdapter;
+    private ListView busTimeTable;
+    private RecyclerView hourlyWeather;
+    private GalleryAdapter hourlyWeatherAdapter;
+    private TextView cityTextView;
+    private TextView allDayTextView;
+    private List<String> weatherData;
     private List<String> titles;
     private List<String> wendu;
     private List<Map<String, String>> favouriteBusData;
-    private RecyclerView history_today;
+    private RecyclerView todayInHistoryView;
     private String city = "Piscataway";
     private List<DataBean> dataBeanList;
     private DataBean dataBean;
     private RecyclerAdapter mAdapter;
-    private ImageView all_the_day_weather_imageview;
-    private TextView wendu_textview;
-    private TextView shidu_textview;
-    private String[] url_list;
-    private TextView qiya_textview;
-    private TextView fengsu_textview;
-    private Button btn_click_plus_bus;
-    private ScrollView scrollView;
+    private ImageView allDatWeatherView;
+    private TextView temperatureView;
+    private TextView humidityView;
+    private String[] urlList;
+    private TextView atmPressureView;
+    private TextView windSpeedView;
+    private Button plusButton;
     private Timer timer;
 
 
@@ -116,140 +115,76 @@ public class TodaySummaryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_today_summary);
-        url_list=new String[5];
-        url_list[0]="";
-        url_list[1]="";
-        url_list[2]="";
-        url_list[3]="";
-        url_list[4]="";
 
+        urlList = new String[5];
+        urlList[0] = "";
+        urlList[1] = "";
+        urlList[2] = "";
+        urlList[3] = "";
+        urlList[4] = "";
+
+        // Load Bus Data
         favouriteBusData = new ArrayList<Map<String, String>>();
         new FindRecentBuses().execute();
 
-        bus_timetable=(ListView) findViewById(R.id.bus_timetable);
-        hourly_weather=(RecyclerView) findViewById(R.id.hourly_weather);
-        scrollView=(ScrollView)findViewById(R.id.scrollView);
-        btn_click_plus_bus=(Button) findViewById(R.id.btn_click_plus_bus);
-        qiya_textview =(TextView) findViewById(R.id.qiya_textView);
-        fengsu_textview =(TextView) findViewById(R.id.fengsu_textView);
-
-        city_text_view =(TextView) findViewById(R.id.city_textView);
-        city_text_view.setText("Piscataway");
-
-        all_the_day_textview =(TextView) findViewById(R.id.all_the_day_weather_textview);
-        all_the_day_textview.setText("Sunny");
-        all_the_day_weather_imageview=(ImageView) findViewById(R.id.all_the_day_weather_imageview);
-        wendu_textview=(TextView)findViewById(R.id.wendu_textView);
-        shidu_textview=(TextView)findViewById(R.id.shidu_textView);
-
-        history_today=(RecyclerView) findViewById(R.id.history_today);
-        initJokeDate();
-        history_today.setAdapter(mAdapter);
-
-        loadWeather(city);
-       /* weatherView = (MiuiWeatherView) findViewById(R.id.Miui_weather_view);
-        List<WeatherBean> data = new ArrayList<>();
-        WeatherBean b1 = new WeatherBean(WeatherBean.SUN,20,"05:00");
-        WeatherBean b2 = new WeatherBean(WeatherBean.RAIN,22,"日出","05:30");
-        data.add(b1);
-        data.add(b2);
-        weatherView.setData(data);*/
+        // Initialize Widgets
+        busTimeTable = (ListView) findViewById(R.id.bus_timetable);
+        hourlyWeather = (RecyclerView) findViewById(R.id.hourly_weather);
+        plusButton = (Button) findViewById(R.id.btn_click_plus_bus);
+        plusButton.setClickable(false);
+        plusButton.setVisibility(View.INVISIBLE);
+        atmPressureView = (TextView) findViewById(R.id.qiya_textView);
+        windSpeedView = (TextView) findViewById(R.id.fengsu_textView);
+        cityTextView = (TextView) findViewById(R.id.city_textView);
+        cityTextView.setText("Piscataway");
+        allDayTextView = (TextView) findViewById(R.id.all_the_day_weather_textview);
+        allDayTextView.setText("Sunny");
+        allDatWeatherView = (ImageView) findViewById(R.id.all_the_day_weather_imageview);
+        temperatureView = (TextView)findViewById(R.id.wendu_textView);
+        humidityView = (TextView)findViewById(R.id.shidu_textView);
+        todayInHistoryView = (RecyclerView) findViewById(R.id.history_today);
+        navigation = (NavigationView)findViewById(R.id.navigation);
+        drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
 
 
-        bus_CursorAdapter=new SimpleAdapter(TodaySummaryActivity.this,
-                /*loadFavouriteBusData(),*/
+        // Initialize Adapters
+        todayInHistoryView.setAdapter(mAdapter);
+
+        busCursorAdapter = new SimpleAdapter(TodaySummaryActivity.this,
                 favouriteBusData,
                 R.layout.activity_today_summary_list_item,
-                new String[]{"bus_name","bus_time"},
+                new String[]{"bus_name", "bus_time"},
                 new int[]{R.id.bus_name,R.id.bus_time}
-                );
-        bus_timetable.setAdapter(bus_CursorAdapter);
+        );
+        busTimeTable.setAdapter(busCursorAdapter);
 
-        bus_timetable.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                SharedPreferences share=getSharedPreferences(AppData.SHAREDPREFERENCES_FAVOURITE_NAME,Activity.MODE_PRIVATE);
-                int count=share.getInt(AppData.DATA_QUANTITY,0);
-                for (int i = position+1; i <=count; i++) {
-                    Map<String, Object> item = new HashMap<String, Object>();
-
-                    String route=share.getString("Bus_Route"+i,"No_data");
-                    String stop=share.getString("Bus_Stop"+i,"No_data");
-                    int next=i+1;
-                    String route_next=share.getString("Bus_Route"+next,"No_data");
-                    String stop_next=share.getString("Bus_Stop"+next,"No_data");
-                    if(route_next=="No_data")
-                    {
-                        route_next="";
-                        stop_next="";
-                    }
-                    SharedPreferences.Editor editor = share.edit();
-                    editor.putString("Bus_Route"+i, route_next);
-                    editor.putString("Bus_Stop"+i, stop_next);
-                    editor.putInt(AppData.DATA_QUANTITY,count);
-                    editor.commit();
-
-                }
-                SharedPreferences.Editor editor = share.edit();
-                editor.remove("Bus_Route"+count);
-                editor.remove("Bus_Stop"+count);
-                count-=1;
-
-                editor.putInt(AppData.DATA_QUANTITY,count);
-                editor.commit();
-
-                return false;
-            }
-        });
+        // Initialize Joke and Weather
+        initJokeDate();
+        loadWeather(city);
+        initWeatherData();
 
 
-
-        bus_timetable.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    // 当手指触摸listview时，让父控件焦点,不能滚动
-                    case MotionEvent.ACTION_DOWN:
-                        scrollView.requestDisallowInterceptTouchEvent(true);
-                    case MotionEvent.ACTION_MOVE:
-                        break;
-
-                    case MotionEvent.ACTION_CANCEL:
-                        // 当手指松开时，让父控件重新获取焦点
-                        scrollView.requestDisallowInterceptTouchEvent(false);
-                        break;
-                }
-                return false;
-            }
-        });
-
-
-
-        navigation = (NavigationView)findViewById(R.id.navigation);
         int size = navigation.getMenu().size();
         for (int i = 0; i < size; i++) {
             navigation.getMenu().getItem(i).setCheckable(true);
             navigation.getMenu().getItem(i).setChecked(false);
         }
-        drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
 
-        initWeatherData();
-        hourly_weather_adapter=new GalleryAdapter(this,mDatas,titles,wendu);
-        LinearLayoutManager ms= new LinearLayoutManager(this);
+        hourlyWeatherAdapter = new GalleryAdapter(this,weatherData,titles,wendu);
+        LinearLayoutManager ms = new LinearLayoutManager(this);
         ms.setOrientation(LinearLayoutManager.HORIZONTAL);
-        hourly_weather.setLayoutManager(ms);
-        hourly_weather.setAdapter(hourly_weather_adapter);
-        hourly_weather.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
-        hourly_weather.setHasFixedSize(true);
+        hourlyWeather.setLayoutManager(ms);
+        hourlyWeather.setAdapter(hourlyWeatherAdapter);
+        hourlyWeather.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        hourlyWeather.setHasFixedSize(true);
 
-
-        btn_click_plus_bus.setOnClickListener(new View.OnClickListener() {
+        plusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
                 startActivityForResult(new Intent(TodaySummaryActivity.this, FavouriteActivity.class),1);
-                // startNotifyService("WKND1", "wknd1", "SCOTT", "scott");
             }
         });
+
         navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -277,62 +212,34 @@ public class TodaySummaryActivity extends AppCompatActivity {
                         return true;
                     case R.id.navigation_1:
                         startActivity(new Intent(TodaySummaryActivity.this, MapsActivity.class));
-                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
-                        //drawRoute();
-                        // Go to activity: settings
                         Log.d("Navigation", "Seleted B Route");
-
                         return true;
                     case R.id.navigation_2:
                         startActivity(new Intent(TodaySummaryActivity.this, MapsActivity.class));
-                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
-                        //drawRoute();
-                        // Go to activity: settings
                         Log.d("Navigation", "Seleted EE Route");
-
                         return true;
                     case R.id.navigation_3:
                         startActivity(new Intent(TodaySummaryActivity.this, MapsActivity.class));
-                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
-                        //drawRoute();
-                        // Go to activity: settings
                         Log.d("Navigation", "Seleted F Route");
-
                         return true;
                     case R.id.navigation_4:
                         startActivity(new Intent(TodaySummaryActivity.this, MapsActivity.class));
-                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
-                        //drawRoute();
-                        // Go to activity: settings
                         Log.d("Navigation", "Seleted H Route");
-
                         return true;
                     case R.id.navigation_5:
                         startActivity(new Intent(TodaySummaryActivity.this, MapsActivity.class));
-                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
-                        //drawRoute();
-                        // Go to activity: settings
                         Log.d("Navigation", "Seleted LX Route");
-
                         return true;
                     case R.id.navigation_6:
                         startActivity(new Intent(TodaySummaryActivity.this, MapsActivity.class));
-                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
-                        //drawRoute();
-                        // Go to activity: settings
                         Log.d("Navigation", "Seleted REX B Route");
-
                         return true;
                     case R.id.navigation_7:
                         startActivity(new Intent(TodaySummaryActivity.this, MapsActivity.class));
-                        //route = RUTransitApp.getBusData().getBusTagsToBusRoutes().get("b");
-                        //drawRoute();
-                        // Go to activity: settings
                         Log.d("Navigation", "Seleted REX L Route");
                         return true;
                     case R.id.navigation_8:
                         startActivity(new Intent(TodaySummaryActivity.this, MapsActivity.class));
-                        // Go to activity: settings
                         Log.d("Navigation", "Seleted REX L Route");
                         return true;
                     default:
@@ -353,45 +260,25 @@ public class TodaySummaryActivity extends AppCompatActivity {
     }
 
     private void initWeatherData() {
-        mDatas = new ArrayList<>(Arrays.asList(
-                url_list[0],
-        url_list[1],
-        url_list[2],
-        url_list[3],
-        url_list[4]
+        weatherData = new ArrayList<>(Arrays.asList(
+                urlList[0],
+        urlList[1],
+        urlList[2],
+        urlList[3],
+        urlList[4]
                 ));
         titles = new ArrayList<>(Arrays.asList("1:00","23:00","1:00","23:00","1:00"));
         wendu = new ArrayList<>(Arrays.asList("","","","",""));
     }
 
-    private List<Map<String, String>> loadFavouriteBusData() {
-        if (favouriteBusData != null) {
-            favouriteBusData.clear();
-        }
-        SharedPreferences share=getSharedPreferences(AppData.SHAREDPREFERENCES_FAVOURITE_NAME,Activity.MODE_PRIVATE);
-        int count = share.getInt(AppData.DATA_QUANTITY,0);
-        for (int i = 1; i <= count; i++) {
-
-            Map<String, String> item = new HashMap<String, String>();
-
-            String route = share.getString(AppData.ROUTE_TAG + i,"No_data");
-            String stop = share.getString(AppData.STOP_TAG + i,"No_data");
-
-            item.put("bus_name", route);
-            item.put("bus_time", stop);
-            favouriteBusData.add(item);
-    }
-        return favouriteBusData;
-    }
-
     private void setJokeData(){
-        history_today.setLayoutManager(new LinearLayoutManager(this));
+        todayInHistoryView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new RecyclerAdapter(this,dataBeanList);
-        history_today.setAdapter(mAdapter);
+        todayInHistoryView.setAdapter(mAdapter);
         mAdapter.setOnScrollListener(new RecyclerAdapter.OnScrollListener() {
             @Override
             public void scrollTo(int pos) {
-                history_today.scrollToPosition(pos);
+                todayInHistoryView.scrollToPosition(pos);
             }
         });
     }
@@ -409,17 +296,13 @@ public class TodaySummaryActivity extends AppCompatActivity {
                 String windSpeed = response.getWind().getSpeed();
                 String des1= weather[0].getDescription();
                 String link = weather[0].getIconLink();
-                Picasso.with(getApplicationContext()).load(link).into(all_the_day_weather_imageview);
-                System.out.println("Test getBase:"+response.getBase());
-                System.out.println("Test getCod:"+response.getCod());
-                System.out.println("Test getMessage:"+response.getSys().getMessage());
-                System.out.println("Test getDt:"+response.getDt());
-                all_the_day_textview.setText(des1);
-                city_text_view.setText(location);
-                wendu_textview.setText(""+Math.round(temperature)+"\u2103");
-                shidu_textview.setText(humidity+"%");
-                qiya_textview.setText(pressure);
-                fengsu_textview.setText(windSpeed);
+                Picasso.with(getApplicationContext()).load(link).into(allDatWeatherView);
+                allDayTextView.setText(des1);
+                cityTextView.setText(location);
+                temperatureView.setText(""+Math.round(temperature)+"\u2103");
+                humidityView.setText(humidity+"%");
+                atmPressureView.setText(pressure);
+                windSpeedView.setText(windSpeed);
             }
             @Override
             public void failure(String message) {
@@ -427,41 +310,39 @@ public class TodaySummaryActivity extends AppCompatActivity {
             }
         });
 
-
-
         weatherMap.getCityForecast(city, new ForecastCallback() {
             @Override
             public void success(ForecastResponseModel response) {
                 //ForecastResponseModel responseModel = response;
                 Weather weather1[] = response.getList()[0].getWeather();
 
-                String des1= weather1[0].getDescription();
-                String Icon1=weather1[0].getIconLink();
+                String des1 = weather1[0].getDescription();
+                String Icon1 = weather1[0].getIconLink();
                 Weather weather2[] = response.getList()[8].getWeather();
-                String des2= weather2[0].getDescription();
-                String Icon2=weather2[0].getIconLink();
+                String des2 = weather2[0].getDescription();
+                String Icon2 = weather2[0].getIconLink();
                 Weather weather3[] = response.getList()[18].getWeather();
-                String des3= weather3[0].getDescription();
-                String Icon3=weather3[0].getIconLink();
+                String des3 = weather3[0].getDescription();
+                String Icon3 = weather3[0].getIconLink();
                 Weather weather4[] = response.getList()[28].getWeather();
-                String des4= weather4[0].getDescription();
-                String Icon4=weather4[0].getIconLink();
+                String des4 = weather4[0].getDescription();
+                String Icon4 = weather4[0].getIconLink();
                 Weather weather5[] = response.getList()[37].getWeather();
-                String des5= weather5[0].getDescription();
-                String Icon5=weather5[0].getIconLink();
+                String des5 = weather5[0].getDescription();
+                String Icon5 = weather5[0].getIconLink();
 
-                url_list[0]=Icon1;
-                url_list[1]=Icon2;
-                url_list[2]=Icon3;
-                url_list[3]=Icon4;
-                url_list[4]=Icon5;
+                urlList[0] = Icon1;
+                urlList[1] = Icon2;
+                urlList[2] = Icon3;
+                urlList[3] = Icon4;
+                urlList[4] = Icon5;
 
-                mDatas.clear();
-                mDatas.add(url_list[0]);
-                mDatas.add(url_list[1]);
-                mDatas.add(url_list[2]);
-                mDatas.add(url_list[3]);
-                mDatas.add(url_list[4]);
+                weatherData.clear();
+                weatherData.add(urlList[0]);
+                weatherData.add(urlList[1]);
+                weatherData.add(urlList[2]);
+                weatherData.add(urlList[3]);
+                weatherData.add(urlList[4]);
 
                 titles.clear();
                 titles.add(des1);
@@ -470,14 +351,11 @@ public class TodaySummaryActivity extends AppCompatActivity {
                 titles.add(des4);
                 titles.add(des5);
 
-                hourly_weather_adapter.notifyDataSetChanged();
-                //  }
+                hourlyWeatherAdapter.notifyDataSetChanged();
             }
 
             @Override
-            public void failure(String message) {
-
-            }
+            public void failure(String message) { }
         });
     }
 
@@ -525,10 +403,6 @@ public class TodaySummaryActivity extends AppCompatActivity {
     @Override
     public void onActivityResult (int requestCode, int resultCode, Intent data) {
         new FindRecentBuses().execute();
-        /*if (resultCode == RESULT_OK) {
-            loadFavouriteBusData();
-            bus_CursorAdapter.notifyDataSetChanged();
-        }*/
     }
 
     @Override
@@ -574,17 +448,13 @@ public class TodaySummaryActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String resultText) {
-            bus_CursorAdapter=new SimpleAdapter(TodaySummaryActivity.this,
-                    /*loadFavouriteBusData(),*/
+            busCursorAdapter = new SimpleAdapter(TodaySummaryActivity.this,
                     favouriteBusData,
                     R.layout.activity_today_summary_list_item,
-                    new String[]{"bus_name","bus_time"},
-                    new int[]{R.id.bus_name,R.id.bus_time}
+                    new String[]{"bus_name", "bus_time"},
+                    new int[]{R.id.bus_name, R.id.bus_time}
             );
-            bus_timetable.setAdapter(bus_CursorAdapter);
-            if (resultText.equals("OK")) {
-                // bus_CursorAdapter.notifyDataSetChanged();
-            }
+            busTimeTable.setAdapter(busCursorAdapter);
         }
 
         private String findRecentBusesOfRouteAtStop (String route, String stop) {

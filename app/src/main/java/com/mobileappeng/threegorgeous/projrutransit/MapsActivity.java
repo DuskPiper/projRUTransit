@@ -105,8 +105,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         stopMarker = BitmapDescriptorFactory.fromResource(R.drawable.bus_stop);
         activeBusMarkers = new ArrayList<>();
         busStopMarkers = new ArrayList<>();
-        showRoute = "b";
-        // refreshActiveRouteTags();
+        showRoute = "b"; // default
 
         // Setup auto refresh
         timer = new Timer();
@@ -142,6 +141,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 drawer.closeDrawers();
                 menuItem.setChecked(true);
                 Log.d("Navigation", "Checked item id = " + Integer.toString(menuItem.getItemId()));
+                boolean isWeekend = (format.format(date).equals("Sun") || format.format(date).equals("Sat"));
                 switch(menuItem.getItemId()) {
                     case R.id.navigation_map:
                         refreshShownRoute();
@@ -159,7 +159,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         startActivity(new Intent(MapsActivity.this, SettingsActivity.class));
                     return true;
                     case R.id.navigation_1:
-                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        if(isWeekend)
                         {
                             moveCamera(40.498, -74.445, 13); // all campuses
                             showRoute = "wknd1";
@@ -173,8 +173,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         return true;
                     case R.id.navigation_2:
                         showRoute="ee";
-
-                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        if(isWeekend)
                         {
                             moveCamera(40.498, -74.445, 13); // all campuses
                             showRoute = "wknd2";
@@ -187,7 +186,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         return true;
                     case R.id.navigation_3:
                         showRoute="f";
-                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        if(isWeekend)
                         {
                             navigation.getMenu().findItem(R.id.navigation_3).setCheckable(false);
                         }
@@ -201,7 +200,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         return true;
                     case R.id.navigation_4:
                         showRoute="h";
-                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        if(isWeekend)
                         {
                             navigation.getMenu().findItem(R.id.navigation_4).setCheckable(false);
                         }
@@ -215,7 +214,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         return true;
                     case R.id.navigation_5:
                         showRoute="lx";
-                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        if(isWeekend)
                         {
                             navigation.getMenu().findItem(R.id.navigation_5).setCheckable(false);
                         }
@@ -228,7 +227,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         return true;
                     case R.id.navigation_6:
                         showRoute="rexb";
-                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        if(isWeekend)
                         {
                             navigation.getMenu().findItem(R.id.navigation_6).setCheckable(false);
                         }
@@ -241,7 +240,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         return true;
                     case R.id.navigation_7:
                         showRoute="rexl";
-                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        if(isWeekend)
                         {
                             navigation.getMenu().findItem(R.id.navigation_7).setCheckable(false);
                         }
@@ -254,7 +253,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         return true;
                     case R.id.navigation_8:
                         showRoute="rbhs";
-                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        if(isWeekend)
                         {
                             navigation.getMenu().findItem(R.id.navigation_8).setCheckable(false);
                         }
@@ -267,7 +266,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         return true;
                     case R.id.navigation_9:
                         showRoute="a";
-                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        if(isWeekend)
                         {
                             navigation.getMenu().findItem(R.id.navigation_9).setCheckable(false);
                         }
@@ -280,7 +279,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         return true;
                     case R.id.navigation_10:
                         showRoute="c";
-                        if(format.format(date).equals("Sun") || format.format(date).equals("Sat"))
+                        if(isWeekend)
                         {
                             navigation.getMenu().findItem(R.id.navigation_10).setCheckable(false);
                         }
@@ -339,7 +338,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         new UpdateMarkers().execute();
 
         // Draws the bus route
-        int polyLineColor = Color.BLUE;
+        int polyLineColor = Color.BLACK;
         if (route != null) {
             pathSegments = route.getBusPathSegments();
         } else {
