@@ -1,6 +1,7 @@
 package com.mobileappeng.threegorgeous.projrutransit;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -296,6 +297,10 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        int notificationId = getIntent().getIntExtra("notificationId", 123);
+        if (notificationId != 123) {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.cancel(notificationId);}
         // Refresh ListView data
         // favouriteDataAdapter.notifyDataSetChanged();
         forceRefreshFavouriteListView();

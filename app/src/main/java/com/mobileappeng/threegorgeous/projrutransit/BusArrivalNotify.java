@@ -107,7 +107,8 @@ public class BusArrivalNotify extends Service {
             NotificationChannel nc = new NotificationChannel("Notify","Bus Notify",NotificationManager.IMPORTANCE_HIGH);
             mNotificationManager.createNotificationChannel(nc);
         }
-        Intent notificationIntent = new Intent(this, MapsActivity.class);
+        Intent notificationIntent = new Intent(this, SettingsActivity.class);
+        notificationIntent.putExtra("notificationId", 1);
         PendingIntent contentItent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         Notification notification = new NotificationCompat.Builder(getApplicationContext())
