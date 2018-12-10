@@ -168,8 +168,8 @@ public class TodaySummaryActivity extends AppCompatActivity {
         bus_timetable.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                SharedPreferences share=getSharedPreferences("Favourite_Stop",Activity.MODE_PRIVATE);
-                int count=share.getInt("Number",0);
+                SharedPreferences share=getSharedPreferences(AppData.SHAREDPREFERENCES_FAVOURITE_NAME,Activity.MODE_PRIVATE);
+                int count=share.getInt(AppData.DATA_QUANTITY,0);
                 for (int i = position+1; i <=count; i++) {
                     Map<String, Object> item = new HashMap<String, Object>();
 
@@ -186,7 +186,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = share.edit();
                     editor.putString("Bus_Route"+i, route_next);
                     editor.putString("Bus_Stop"+i, stop_next);
-                    editor.putInt("Number",count);
+                    editor.putInt(AppData.DATA_QUANTITY,count);
                     editor.commit();
 
                 }
@@ -195,7 +195,7 @@ public class TodaySummaryActivity extends AppCompatActivity {
                 editor.remove("Bus_Stop"+count);
                 count-=1;
 
-                editor.putInt("Number",count);
+                editor.putInt(AppData.DATA_QUANTITY,count);
                 editor.commit();
 
                 return false;
@@ -373,8 +373,8 @@ public class TodaySummaryActivity extends AppCompatActivity {
         if (favouriteBusData != null) {
             favouriteBusData.clear();
         }
-        SharedPreferences share=getSharedPreferences("Favourite_Stop",Activity.MODE_PRIVATE);
-        int count = share.getInt("Number",0);
+        SharedPreferences share=getSharedPreferences(AppData.SHAREDPREFERENCES_FAVOURITE_NAME,Activity.MODE_PRIVATE);
+        int count = share.getInt(AppData.DATA_QUANTITY,0);
         for (int i = 1; i <= count; i++) {
 
             Map<String, String> item = new HashMap<String, String>();
@@ -577,8 +577,8 @@ public class TodaySummaryActivity extends AppCompatActivity {
     private class FindRecentBuses extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
-            SharedPreferences sp = getSharedPreferences("Favourite_Stop",Activity.MODE_PRIVATE);
-            int count = sp.getInt("Number",0);
+            SharedPreferences sp = getSharedPreferences(AppData.SHAREDPREFERENCES_FAVOURITE_NAME,Activity.MODE_PRIVATE);
+            int count = sp.getInt(AppData.DATA_QUANTITY,0);
             favouriteBusData = new ArrayList<Map<String, String>>();
             for (int i = 1; i <= count; i++) {
                 // Load from shared preference
