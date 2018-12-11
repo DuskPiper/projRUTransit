@@ -107,13 +107,14 @@ public class BusArrivalNotify extends Service {
             NotificationChannel nc = new NotificationChannel("Notify","Bus Notify",NotificationManager.IMPORTANCE_HIGH);
             mNotificationManager.createNotificationChannel(nc);
         }
-        Intent notificationIntent = new Intent(this, MapsActivity.class);
+        Intent notificationIntent = new Intent(this, SettingsActivity.class);
+        notificationIntent.putExtra("notificationId", 1);
         PendingIntent contentItent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         Notification notification = new NotificationCompat.Builder(getApplicationContext())
                 .setContentText(" Approaching " + stopName)
                 .setContentTitle("Bus " + routeName)
-                .setSmallIcon(R.drawable.ic_launcher_background)//Renew LOGO
+                .setSmallIcon(R.drawable.logo)//Renew LOGO
                 .setWhen(System.currentTimeMillis())
                 .setDefaults(DEFAULT_ALL)
                 .setChannelId("Notify")
@@ -131,7 +132,7 @@ public class BusArrivalNotify extends Service {
     private void sendFlashLightAlert() {
         try {
             CameraManager cameraManager = (CameraManager) this.getSystemService(Context.CAMERA_SERVICE);
-            cameraManager.setTorchMode("0", true);// "0"是主闪光灯
+            cameraManager.setTorchMode("0", true);
             cameraManager.setTorchMode("0", false);
         } catch (Exception e) {
             e.printStackTrace();

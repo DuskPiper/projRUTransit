@@ -78,7 +78,7 @@ public class FavouriteActivity extends AppCompatActivity {
                     FavouriteActivity.this.finish();
                 }
 
-                //Toast.makeText(getContext()," 点击了 "+position,Toast.LENGTH_SHORT).show();
+
                 favouriteRouteView.setVisibility(RecyclerView.INVISIBLE);
                 favouriteStopView.setVisibility(RecyclerView.VISIBLE);
 
