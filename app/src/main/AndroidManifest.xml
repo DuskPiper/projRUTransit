@@ -50,14 +50,12 @@
             android:label="@string/title_activity_maps">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".SettingsActivity" />
         <activity android:name=".TodaySummaryActivity"/>
         <activity android:name=".FavouriteActivity">
-
         </activity>
         <uses-library android:name="org.apache.http.legacy" android:required="false" />
     </application>
